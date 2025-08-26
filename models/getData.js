@@ -2,7 +2,8 @@
 class GetData {
     static async getData() {
         try {
-            const response = await fetch("https://api.apify.com/v2/actor-tasks/certified_businessman~tiktok-berl/runs/last/dataset/items?token=apify_api_zcp6VW96GAh477ef9LiYcZyYuYDcqi1bWV7K")
+            const API_KEY = process.env.APIFY_TOKEN
+            const response = await fetch(`https://api.apify.com/v2/actor-tasks/certified_businessman~tiktok-berl/runs/last/dataset/items?token=${API_KEY}`)
 
             if (!response.ok) throw new Error(`Error dari sana nya: ${response.status}`)
 
