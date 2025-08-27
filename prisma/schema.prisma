@@ -9,6 +9,7 @@ datasource db {
 
 model Video {
   id           String          @id @default(uuid()) @db.Uuid
+  tiktokId     String          @unique @map("tiktok_id")
   createTime   DateTime        @map("create_time")
   webVideoUrl  String          @map("web_video_url")
   shareCount   Int             @map("share_count")
