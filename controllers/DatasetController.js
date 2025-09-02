@@ -25,6 +25,7 @@ class DatasetController {
             createTime: new Date(item.createTimeISO),
             webVideoUrl: item.webVideoUrl,
             playCount: item.playCount,
+            likeCount: item.likeCount ?? 0,
             shareCount: item.shareCount,
             collectCount: item.collectCount,
             commentCount: item.commentCount
@@ -33,6 +34,7 @@ class DatasetController {
             tiktokId: item.id,
             createTime: new Date(item.createTimeISO),
             webVideoUrl: item.webVideoUrl,
+            likeCount: item.likeCount ?? 0,
             playCount: item.playCount,
             shareCount: item.shareCount,
             collectCount: item.collectCount,

@@ -34,6 +34,7 @@ class Tiktok {
                 id: item.id,
                 text: item.text,
                 createTimeISO: item.createTimeISO,
+                likeCount: item.diggCount,
                 webVideoUrl: item.webVideoUrl,
                 shareCount: item.shareCount,
                 playCount: item.playCount,

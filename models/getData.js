@@ -16,6 +16,7 @@ class GetData {
                 webVideoUrl: item.webVideoUrl,
                 shareCount: item.shareCount,
                 playCount: item.playCount,
+                likeCount: item.diggCount,
                 collectCount: item.collectCount,
                 commentCount: item.commentCount,
                 coverVideo: item.videoMeta.originalCoverUrl,

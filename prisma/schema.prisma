@@ -13,6 +13,7 @@ model Video {
   createTime   DateTime        @map("create_time")
   webVideoUrl  String          @map("web_video_url")
   shareCount   Int             @map("share_count")
+  likeCount   Int              @map("like_count") 
   playCount    Int             @map("play_count")
   collectCount Int             @map("collect_count")
   commentCount Int             @map("comment_count")
@@ -30,6 +31,14 @@ model Hashtag {
 
   @@map("hashtags")
 }
+
+model n8n_chat_histories {
+  id         Int    @id @default(autoincrement())
+  session_id String
+  message    Json   
+  @@map("n8n_chat_histories")
+}
+
 
 model VideoHashtag {
   videoId   String  @db.Uuid
