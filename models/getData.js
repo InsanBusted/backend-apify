@@ -1,34 +1,43 @@
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
 
 class GetData {
     static async getData() {
         try {
-            const API_KEY = process.env.APIFY_TOKEN
-            const response = await fetch(`https://api.apify.com/v2/actor-tasks/mellow_cod~tiktok-scraping-berl/runs/last/dataset/items?token=${API_KEY}`)
+            const videos = await prisma.video.findMany({
+                include: {
+                    hashtags: {
+                        include: {
+                            hashtag: true,
+                        },
+                    },
+                },
+                orderBy: {
+                    createTime: 'desc',
+                },
+            });
 
-            if (!response.ok) throw new Error(`Error dari sana nya: ${response.status}`)
-
-            const data = await response.json()
-
-            const mappedData = data.map(item => ({
-                id: item.id,
-                text: item.text,
-                createTimeISO: item.createTimeISO,
-                webVideoUrl: item.webVideoUrl,
-                shareCount: item.shareCount,
-                playCount: item.playCount,
-                likeCount: item.diggCount,
-                collectCount: item.collectCount,
-                commentCount: item.commentCount,
-                coverVideo: item.videoMeta.originalCoverUrl,
-                hashtags: item.hashtags?.map(h => ({ name: h.name })) || []
+            const mappedData = videos.map(video => ({
+                id: video.tiktokId,
+                iklan: video.isAd,
+                coverVideo: video.coverVideo,
+                webVideoUrl: video.webVideoUrl,
+                shareCount: video.shareCount,
+                playCount: video.playCount,
+                likeCount: video.likeCount,
+                collectCount: video.collectCount,
+                commentCount: video.commentCount,
+                createTimeISO: video.createTime.toISOString(),
+                hashtags: video.hashtags.map(h => ({ name: h.hashtag.name })),
             }));
 
             console.log(mappedData);
             return mappedData;
         } catch (error) {
-            throw new Error(`Error data nya : ${error.message}`)
+            console.error(`Error fetching data dari DB: ${error.message}`);
+            throw error;
         }
     }
 }
 
-export default GetData
+export default GetData;

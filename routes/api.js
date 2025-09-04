@@ -5,6 +5,7 @@ import DatasetController from "../controllers/DatasetController.js";
 const router = Router();
 
 router.get("/tiktok/run", TiktokController.index);
+router.get("/tiktok/run-reference", TiktokController.reference);
 router.get("/tiktok", DatasetController.getDataset);
 router.post("/tiktok/save", DatasetController.saveDataset);
 

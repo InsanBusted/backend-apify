@@ -11,14 +11,16 @@ model Video {
   id           String          @id @default(uuid()) @db.Uuid
   tiktokId     String          @unique @map("tiktok_id")
   createTime   DateTime        @map("create_time")
+  coverVideo   String          @map("coverVideo")
   webVideoUrl  String          @map("web_video_url")
   shareCount   Int             @map("share_count")
-  likeCount   Int              @map("like_count") 
+  likeCount    Int             @map("like_count") 
   playCount    Int             @map("play_count")
   collectCount Int             @map("collect_count")
   commentCount Int             @map("comment_count")
 
   hashtags     VideoHashtag[]
+  isAd         Boolean         @default(false)
 
   @@map("videos")
 }

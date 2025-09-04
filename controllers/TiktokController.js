@@ -14,6 +14,19 @@ class TiktokController {
       });
     }
   }
+
+  static async reference(req, res) {
+    try {
+      const data = await Tiktok.fetchDataReference();
+      res.status(200).json({ success: true, data });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "error fetch",
+        error: error.message,
+      });
+    }
+  }
 }
 
 export default TiktokController;
