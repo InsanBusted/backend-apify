@@ -1,96 +1,126 @@
-import prisma from "../lib/db/prisma.js"
-import GetData from "../models/getData.js"
+import prisma from "../lib/db/prisma.js";
+import GetData from "../models/getData.js";
 
 class DatasetController {
-  static async getDataset(req, res) {
+  static async getDetailData(req, res) {
     try {
-      const data = await GetData.getData()
-      res.status(200).json({ success: true, data })
+      const { datasetId } = req.params;
+
+      if (!datasetId) {
+        return res
+          .status(400)
+          .json({ success: false, error: "datasetId wajib ada" });
+      }
+
+      const data = await GetData.getDataDetailKonten(datasetId);
+
+      await Promise.all(
+        data.map(async (item) => {
+          const videoData = {
+            datasetId,
+            createTime: new Date(item.createTimeISO),
+            author: item.author,
+            isAd: item.iklan,
+            webVideoUrl: item.webVideoUrl,
+            playCount: item.playCount,
+            coverVideo: item.coverVideo,
+            searchQuery: item.searchQuery,
+            likeCount: item.likeCount ?? 0,
+            shareCount: item.shareCount,
+            collectCount: item.collectCount,
+            commentCount: item.commentCount,
+          };
+
+          const video = await prisma.video.upsert({
+            where: { webVideoUrl: item.webVideoUrl },
+            update: videoData,
+            create: { webVideoUrl: item.webVideoUrl, ...videoData },
+          });
+
+          if (item.hashtags?.length) {
+            const hashtags = item.hashtags
+              .map((tag) => tag.name?.trim())
+              .filter(Boolean);
+
+            if (hashtags.length > 0) {
+              await prisma.hashtag.createMany({
+                data: hashtags.map((name) => ({ name })),
+                skipDuplicates: true,
+              });
+
+              const allTags = await prisma.hashtag.findMany({
+                where: { name: { in: hashtags } },
+              });
+
+              await prisma.videoHashtag.createMany({
+                data: allTags.map((tag) => ({
+                  videoId: video.id,
+                  hashtagId: tag.id,
+                })),
+                skipDuplicates: true,
+              });
+            }
+          }
+        })
+      );
+
+      res.status(200).json({
+        success: true,
+        message: `Dataset saved successfully: ${data.length} videos`,
+      });
     } catch (error) {
       res.status(500).json({
         success: false,
-        error: error.message
-      })
+        error: error.message,
+      });
     }
   }
 
-  static async saveDataset(req, res) {
+  static async getAllData(req, res) {
     try {
-      const response = await GetData.getData()
-
-      for (const item of response) {
-        const video = await prisma.video.upsert({
-          where: { tiktokId: item.id },
-          update: {
-            createTime: new Date(item.createTimeISO),
-            isAd: item.iklan,
-            webVideoUrl: item.webVideoUrl,
-            playCount: item.playCount,
-            coverVideo: item.coverVideo,
-            likeCount: item.likeCount ?? 0,
-            shareCount: item.shareCount,
-            collectCount: item.collectCount,
-            commentCount: item.commentCount
+      const { datasetId } = req.query;
+      const videos = await prisma.video.findMany({
+        where: datasetId ? { datasetId: String(datasetId) } : undefined,
+        include: {
+          hashtags: {
+            include: {
+              hashtag: true,
+            },
           },
-          create: {
-            tiktokId: item.id,
-            createTime: new Date(item.createTimeISO),
-            webVideoUrl: item.webVideoUrl,
-            isAd: item.iklan,
-            coverVideo: item.coverVideo,
-            likeCount: item.likeCount ?? 0,
-            playCount: item.playCount,
-            shareCount: item.shareCount,
-            collectCount: item.collectCount,
-            commentCount: item.commentCount
-          }
-        })
+        },
+        orderBy: {
+          createTime: "desc",
+        },
+      });
 
-        // masukin hastag
-        if (item.hashtags && item.hashtags.length > 0) {
-          const hashtags = item.hashtags
-            .map(tag => tag.name)  
-            .filter(Boolean)       
-            .map(tag => tag.trim()) 
+      const data = videos.map((video) => ({
+        id: video.tiktokId,
+        datasetId: video.datasetId,
+        author: video.author,
+        iklan: video.isAd,
+        coverVideo: video.coverVideo,
+        webVideoUrl: video.webVideoUrl,
+        shareCount: video.shareCount,
+        playCount: video.playCount,
+        likeCount: video.likeCount,
+        collectCount: video.collectCount,
+        commentCount: video.commentCount,
+        searchQuery: video.searchQuery ?? "",
+        createTimeISO: video.createTime.toISOString(),
+        hashtags: video.hashtags.map((h) => ({ name: h.hashtag.name })),
+      }));
 
-          if (hashtags.length > 0) {
-            const existing = await prisma.hashtag.findMany({
-              where: { name: { in: hashtags } }
-            })
-            const existingNames = existing.map(existing => existing.name)
-
-            const newTags = hashtags.filter(tag => !existingNames.includes(tag))
-
-            if (newTags.length > 0) {
-              await prisma.hashtag.createMany({
-                data: newTags.map(name => ({ name })),
-                skipDuplicates: true
-              })
-            } 
-
-            const allTags = await prisma.hashtag.findMany({
-              where: { name: { in: hashtags } }
-            })
-
-            await prisma.videoHashtag.createMany({
-              data: allTags.map(tag => ({
-                videoId: video.id,
-                hashtagId: tag.id
-              })),
-              skipDuplicates: true
-            })
-          }
-        }
-
-      }
-
-      res.status(200).json({ success: true, message: "Dataset saved successfully (optimized)" })
+      res.status(200).json({
+        success: true,
+        data,
+      });
     } catch (error) {
-      console.error(error)
-      res.status(500).json({ success: false, error: error.message })
+      res.status(500).json({
+        success: false,
+        error: error.message,
+      }); 
     }
   }
-
 }
 
-export default DatasetController
+export default DatasetController;

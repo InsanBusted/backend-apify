@@ -9,20 +9,25 @@ datasource db {
 
 model Video {
   id           String          @id @default(uuid()) @db.Uuid
-  tiktokId     String          @unique @map("tiktok_id")
-  createTime   DateTime        @map("create_time")
+  // tiktokId     String          @unique @map("tiktok_id")
+  author       String          @map("author")
+  datasetId    String?         @map("dataset_id") 
+  createTime   DateTime        @map("create_time") 
   coverVideo   String          @map("coverVideo")
-  webVideoUrl  String          @map("web_video_url")
+  webVideoUrl  String          @unique @map("web_video_url")
   shareCount   Int             @map("share_count")
   likeCount    Int             @map("like_count") 
   playCount    Int             @map("play_count")
   collectCount Int             @map("collect_count")
   commentCount Int             @map("comment_count")
+  searchQuery String           @map("search_query")
 
   hashtags     VideoHashtag[]
-  isAd         Boolean         @default(false)
+  isAd         Boolean?         
 
   @@map("videos")
+  @@index([datasetId])
+  @@index([createTime])
 }
 
 model Hashtag {
@@ -33,6 +38,8 @@ model Hashtag {
 
   @@map("hashtags")
 }
+
+
 
 model n8n_chat_histories {
   id         Int    @id @default(autoincrement())

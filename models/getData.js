@@ -2,42 +2,41 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 class GetData {
-    static async getData() {
-        try {
-            const videos = await prisma.video.findMany({
-                include: {
-                    hashtags: {
-                        include: {
-                            hashtag: true,
-                        },
-                    },
-                },
-                orderBy: {
-                    createTime: 'desc',
-                },
-            });
+  static async getDataDetailKonten(datasetId) {
+    try {
+      const response = await fetch(
+        `https://api.apify.com/v2/datasets/${datasetId}/items?token=${process.env.APIFY_TOKEN}`
+      );
 
-            const mappedData = videos.map(video => ({
-                id: video.tiktokId,
-                iklan: video.isAd,
-                coverVideo: video.coverVideo,
-                webVideoUrl: video.webVideoUrl,
-                shareCount: video.shareCount,
-                playCount: video.playCount,
-                likeCount: video.likeCount,
-                collectCount: video.collectCount,
-                commentCount: video.commentCount,
-                createTimeISO: video.createTime.toISOString(),
-                hashtags: video.hashtags.map(h => ({ name: h.hashtag.name })),
-            }));
+      if (!response.ok) {
+        throw new Error(`API error ${response.status}`);
+      }
 
-            console.log(mappedData);
-            return mappedData;
-        } catch (error) {
-            console.error(`Error fetching data dari DB: ${error.message}`);
-            throw error;
-        }
+      const items = await response.json();
+
+      const mappedData = items.map((item) => ({
+        id: item.id,
+        author: item.authorMeta?.name,
+        iklan: item.isAd,
+        text: item.text ?? "",
+        createTimeISO: item.createTimeISO,
+        likeCount: item.diggCount ?? 0,
+        webVideoUrl: item.webVideoUrl ?? "",
+        shareCount: item.shareCount ?? 0,
+        playCount: item.playCount ?? 0,
+        collectCount: item.collectCount ?? 0,
+        commentCount: item.commentCount ?? 0,
+        searchQuery: item.searchQuery ?? "",
+        coverVideo: item.videoMeta?.originalCoverUrl ?? "",
+        hashtags: item.hashtags?.map((h) => ({ name: h.name })) || [],
+      }));
+
+      return mappedData;
+    } catch (error) {
+      console.error(`Error fetching data dari API: ${error.message}`);
+      throw error;
     }
+  }
 }
 
 export default GetData;
