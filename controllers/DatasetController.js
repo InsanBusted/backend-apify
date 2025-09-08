@@ -78,9 +78,12 @@ class DatasetController {
 
   static async getAllData(req, res) {
     try {
-      const { datasetId } = req.query;
+      const { datasetId, author } = req.query;
       const videos = await prisma.video.findMany({
-        where: datasetId ? { datasetId: String(datasetId) } : undefined,
+         where: {
+        ...(datasetId && { datasetId: String(datasetId) }),
+        ...(author && { author: String(author) }),
+      },
         include: {
           hashtags: {
             include: {
@@ -118,7 +121,7 @@ class DatasetController {
       res.status(500).json({
         success: false,
         error: error.message,
-      }); 
+      });
     }
   }
 }

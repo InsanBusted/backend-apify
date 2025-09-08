@@ -19,8 +19,12 @@ class TiktokController {
     try {
       let { searchQueries } = req.body;
       if (typeof searchQueries === "string") {
-        searchQueries = searchQueries.split(/\s+/);
+        searchQueries = searchQueries
+          .split(/\n+/)
+          .map((s) => s.trim())
+          .filter((s) => s !== "");
       }
+
 
       if (!Array.isArray(searchQueries) || searchQueries.length === 0) {
         return res.status(400).json({

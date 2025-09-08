@@ -11,9 +11,9 @@ class Tiktok {
 
       const input = {
         excludePinnedPosts: false,
-        newestPostDate: "2025-09-06",
+        newestPostDate: "2025-09-08",
         oldestPostDateUnified: "2025-07-06",
-        profileScrapeSections: ["videos"],
+        profileScrapeSections: ["latest"],
         profiles: ["berlofficial"],
         resultsPerPage: 20,
         shouldDownloadAvatars: false,
@@ -23,7 +23,7 @@ class Tiktok {
         shouldDownloadVideos: false,
       };
 
-      const run = await client.task("d5KypHQ3sfXgHCK8d").call(input);
+      const run = await client.task("aUYLKLz8gNi6spVZN").call(input);
       const items = await GetData.getDataDetailKonten(run.defaultDatasetId);
       const mappedData = mapTikTokData(items, run.defaultDatasetId);
 
@@ -50,7 +50,7 @@ class Tiktok {
         shouldDownloadVideos: false,
       };
 
-      const run = await client.task("EM6rqw6tA5OHQxT8g").call(input);
+      const run = await client.task("nVp1z4ovfyZ6SjyCD").call(input);
       const items = await GetData.getDataDetailKonten(run.defaultDatasetId);
       const mappedData = mapTikTokData(items, run.defaultDatasetId);
 
@@ -77,7 +77,6 @@ class Tiktok {
         searchQueries: Array.isArray(searchQueries)
           ? searchQueries
           : [searchQueries],
-        searchSection: "/video",
         shouldDownloadAvatars: false,
         shouldDownloadCovers: false,
         shouldDownloadMusicCovers: false,
@@ -86,7 +85,7 @@ class Tiktok {
         shouldDownloadVideos: false,
       };
 
-      const run = await client.task("TXPomRvCqJXe7j4FQ").call(input);
+      const run = await client.task("iqQ7ciX8RlNjtKzpe").call(input);
       const items = await GetData.getDataDetailKonten(run.defaultDatasetId);
       const mappedData = mapTikTokData(items, run.defaultDatasetId);
 
