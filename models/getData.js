@@ -37,6 +37,46 @@ class GetData {
       throw error;
     }
   }
+
+  static async getDataDetailKontenInstagram(datasetId) {
+    try {
+      const response = await fetch(
+        `https://api.apify.com/v2/datasets/${datasetId}/items?token=${process.env.APIFY_TOKEN}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`API error ${response.status}`);
+      }
+
+      const items = await response.json();
+
+    const mappedData = items.flatMap((item) =>
+      (item.topPosts || []).map((post) => ({
+        id: post.id,
+        author: post.ownerUsername,
+        iklan: post.isSponsored,
+        text: post.caption ?? "",
+        createTimeISO: post.timestamp,
+        likeCount: post.likesCount ?? 0,
+        commentCount: post.commentsCount ?? 0,
+        shareCount: post.reshareCount ?? 0,
+        playCount: post.videoPlayCount ?? 0,
+        collectCount: post.reshareCount ?? 0,
+        webVideoUrl: post.url ?? "",
+        coverVideo: post.displayUrl ?? "",
+        hashtags: post.hashtags?.map((h) =>
+          typeof h === "string" ? h : h.name
+        ) || [],
+        searchQuery: item.name ?? "",
+      }))
+    );
+
+      return mappedData;
+    } catch (error) {
+      console.error(`Error fetching data dari API: ${error.message}`);
+      throw error;
+    }
+  }
 }
 
 export default GetData;

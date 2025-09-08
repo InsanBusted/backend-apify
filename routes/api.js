@@ -1,6 +1,7 @@
 import { Router } from "express";
 import TiktokController from "../controllers/TiktokController.js";
 import DatasetController from "../controllers/DatasetController.js";
+import InstagramController from "../controllers/InstagramController.js";
 
 const router = Router();
 
@@ -12,6 +13,11 @@ router.post("/tiktok/run-reference", TiktokController.reference);
 router.post("/tiktok/run-detail", TiktokController.getDetailKonten);
 // ALL KONTEN
 router.get("/tiktok/konten", DatasetController.getAllData);
+
+// instagram
+router.post("/instagram/run-reference", InstagramController.reference);
+router.get("/instagram/:datasetId" , InstagramController.getData)
+
 
 // Simpan ke Database
 router.get("/tiktok/:datasetId", DatasetController.getDetailData);
