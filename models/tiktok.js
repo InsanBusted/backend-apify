@@ -1,6 +1,7 @@
 import { ApifyClient } from "apify-client";
 import { mapTikTokData } from "../lib/utils/mapTiktokData.js";
 import GetData from "./getData.js";
+import { TASKS } from "../lib/utils/taskId.js";
 
 class Tiktok {
   static async fetchData() {
@@ -23,7 +24,7 @@ class Tiktok {
         shouldDownloadVideos: false,
       };
 
-      const run = await client.task("gWmabDSA8o1Zq5h1w").call(input);
+      const run = await client.task(TASKS.getEvalTiktok).call(input);
       const items = await GetData.getDataDetailKonten(run.defaultDatasetId);
       const mappedData = mapTikTokData(items, run.defaultDatasetId);
 
@@ -50,7 +51,7 @@ class Tiktok {
         shouldDownloadVideos: false,
       };
 
-      const run = await client.task("Lzc5Oqd6ALLPgAojE").call(input);
+      const run = await client.task(TASKS.detailDataTiktok).call(input);
       const items = await GetData.getDataDetailKonten(run.defaultDatasetId);
       const mappedData = mapTikTokData(items, run.defaultDatasetId);
 
@@ -85,7 +86,7 @@ class Tiktok {
         shouldDownloadVideos: false,
       };
 
-      const run = await client.task("oxQBpjP0WQ9JLgEdV").call(input);
+      const run = await client.task(TASKS.referensiTiktok).call(input);
       const items = await GetData.getDataDetailKonten(run.defaultDatasetId);
       const mappedData = mapTikTokData(items, run.defaultDatasetId);
 

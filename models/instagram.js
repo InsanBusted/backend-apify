@@ -2,6 +2,7 @@ import { ApifyClient } from "apify-client";
 import { mapTikTokData } from "../lib/utils/mapTiktokData.js";
 import GetData from "./getData.js";
 import { mapInstagramData } from "../lib/utils/mapInstagramData.js";
+import { TASKS } from "../lib/utils/taskId.js";
 
 class Instagram {
   static async fetchReferenceDataInstagram({ search }) {
@@ -22,7 +23,7 @@ class Instagram {
         searchType: "hashtag",
       };
 
-      const run = await client.task("EK5r7bYR7VyLeCISx").call(input);
+      const run = await client.task(TASKS.referensiInstagram).call(input);
       const items = await GetData.getDataDetailKontenInstagram(
         run.defaultDatasetId
       );
