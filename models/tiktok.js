@@ -23,7 +23,7 @@ class Tiktok {
         shouldDownloadVideos: false,
       };
 
-      const run = await client.task("aUYLKLz8gNi6spVZN").call(input);
+      const run = await client.task("gWmabDSA8o1Zq5h1w").call(input);
       const items = await GetData.getDataDetailKonten(run.defaultDatasetId);
       const mappedData = mapTikTokData(items, run.defaultDatasetId);
 
@@ -50,7 +50,7 @@ class Tiktok {
         shouldDownloadVideos: false,
       };
 
-      const run = await client.task("nVp1z4ovfyZ6SjyCD").call(input);
+      const run = await client.task("Lzc5Oqd6ALLPgAojE").call(input);
       const items = await GetData.getDataDetailKonten(run.defaultDatasetId);
       const mappedData = mapTikTokData(items, run.defaultDatasetId);
 
@@ -85,7 +85,7 @@ class Tiktok {
         shouldDownloadVideos: false,
       };
 
-      const run = await client.task("iqQ7ciX8RlNjtKzpe").call(input);
+      const run = await client.task("oxQBpjP0WQ9JLgEdV").call(input);
       const items = await GetData.getDataDetailKonten(run.defaultDatasetId);
       const mappedData = mapTikTokData(items, run.defaultDatasetId);
 

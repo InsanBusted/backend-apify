@@ -13,6 +13,7 @@ router.post("/tiktok/run-reference", TiktokController.reference);
 router.post("/tiktok/run-detail", TiktokController.getDetailKonten);
 // ALL KONTEN
 router.get("/tiktok/konten", DatasetController.getAllData);
+router.get("/instagram/konten", DatasetController.getAllDataInstagram);
 
 // instagram
 router.post("/instagram/run-reference", InstagramController.reference);

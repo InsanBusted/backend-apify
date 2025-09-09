@@ -124,6 +124,55 @@ class DatasetController {
       });
     }
   }
+  
+  static async getAllDataInstagram(req, res) {
+    try {
+      const { datasetId, author } = req.query;
+      const videos = await prisma.video.findMany({
+         where: {
+        ...(datasetId && { datasetId: String(datasetId) }),
+        ...(author && { author: String(author) }),
+      },
+        include: {
+          hashtags: {
+            include: {
+              hashtag: true,
+            },
+          },
+        },
+        orderBy: {
+          createTime: "desc",
+        },
+      });
+
+      const data = videos.map((video) => ({
+        id: video.tiktokId,
+        datasetId: video.datasetId,
+        author: video.author,
+        iklan: video.isAd,
+        coverVideo: video.coverVideo,
+        webVideoUrl: video.webVideoUrl,
+        shareCount: video.shareCount,
+        playCount: video.playCount,
+        likeCount: video.likeCount,
+        collectCount: video.collectCount,
+        commentCount: video.commentCount,
+        searchQuery: video.searchQuery ?? "",
+        createTimeISO: video.createTime.toISOString(),
+        hashtags: video.hashtags.map((h) => ({ name: h.hashtag.name })),
+      }));
+
+      res.status(200).json({
+        success: true,
+        data,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: error.message,
+      });
+    }
+  }
 }
 
 export default DatasetController;
