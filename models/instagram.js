@@ -16,15 +16,39 @@ class Instagram {
         enhanceUserSearchWithFacebookPage: false,
         isUserReelFeedURL: false,
         isUserTaggedFeedURL: false,
-        resultsLimit: 1,
-        resultsType: "posts",   
+        resultsLimit: 5,
+        resultsType: "posts",
         search: search,
         searchLimit: 1,
-        searchType: "hashtag",
       };
 
       const run = await client.task(TASKS.referensiInstagram).call(input);
       const items = await GetData.getDataDetailKontenInstagram(
+        run.defaultDatasetId
+      );
+      const mappedData = mapInstagramData(items, run.defaultDatasetId);
+
+      return mappedData;
+    } catch (error) {
+      console.error("Error fetchData:", error);
+      throw new Error(`Error fetching data: ${error.message}`);
+    }
+  }
+
+  static async fetchDetailData({ postUrl }) {
+    try {
+      const client = new ApifyClient({
+        token: process.env.APIFY_TOKEN,
+      });
+
+      const input = {
+        username: Array.isArray(postUrl) ? postUrl : [postUrl],
+        resultsLimit: 30,
+        skipPinnedPosts: false,
+      };
+
+      const run = await client.task(TASKS.detailDataInstagram).call(input);
+      const items = await GetData.getDataDetailKontenInstagramPost(
         run.defaultDatasetId
       );
       const mappedData = mapInstagramData(items, run.defaultDatasetId);

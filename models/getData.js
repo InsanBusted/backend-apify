@@ -38,6 +38,44 @@ class GetData {
     }
   }
 
+  static async getDataDetailKontenInstagramPost(datasetId) {
+    try {
+      const response = await fetch(
+        `https://api.apify.com/v2/datasets/${datasetId}/items?token=${process.env.APIFY_TOKEN}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`API error ${response.status}`);
+      }
+
+      const items = await response.json();
+
+      const mappedData = items.map((item) => ({
+        id: item.id,
+        author: item.ownerUsername,
+        iklan: item.isSponsored,
+        text: item.caption ?? "",
+        location: item.locationName,
+        createTimeISO: item.timestamp,
+        likeCount: item.likesCount ?? 0,
+        commentCount: item.commentsCount ?? 0,
+        shareCount: item.reshareCount ?? 0,
+        playCount: item.videoPlayCount ?? 0,
+        collectCount: item.reshareCount ?? 0,
+        webVideoUrl: item.url ?? "",
+        coverVideo: item.displayUrl ?? "",
+        hashtags:
+          item.hashtags?.map((h) => (typeof h === "string" ? h : h.name)) || [],
+        searchQuery: item.name ?? "",
+      }));
+
+      return mappedData;
+    } catch (error) {
+      console.error(`Error fetching data dari API: ${error.message}`);
+      throw error;
+    }
+  }
+
   static async getDataDetailKontenInstagram(datasetId) {
     try {
       const response = await fetch(
@@ -50,27 +88,27 @@ class GetData {
 
       const items = await response.json();
 
-    const mappedData = items.flatMap((item) =>
-      (item.topPosts || []).map((post) => ({
-        id: post.id,
-        author: post.ownerUsername,
-        iklan: post.isSponsored,
-        text: post.caption ?? "",
-        location: post.locationName,
-        createTimeISO: post.timestamp,
-        likeCount: post.likesCount ?? 0,
-        commentCount: post.commentsCount ?? 0,
-        shareCount: post.reshareCount ?? 0,
-        playCount: post.videoPlayCount ?? 0,
-        collectCount: post.reshareCount ?? 0,
-        webVideoUrl: post.url ?? "",
-        coverVideo: post.displayUrl ?? "",
-        hashtags: post.hashtags?.map((h) =>
-          typeof h === "string" ? h : h.name
-        ) || [],
-        searchQuery: item.name ?? "",
-      }))
-    );
+      const mappedData = items.flatMap((item) =>
+        (item.topPosts || []).map((post) => ({
+          id: post.id,
+          author: post.ownerUsername,
+          iklan: post.isSponsored,
+          text: post.caption ?? "",
+          location: post.locationName,
+          createTimeISO: post.timestamp,
+          likeCount: post.likesCount ?? 0,
+          commentCount: post.commentsCount ?? 0,
+          shareCount: post.reshareCount ?? 0,
+          playCount: post.videoPlayCount ?? 0,
+          collectCount: post.reshareCount ?? 0,
+          webVideoUrl: post.url ?? "",
+          coverVideo: post.displayUrl ?? "",
+          hashtags:
+            post.hashtags?.map((h) => (typeof h === "string" ? h : h.name)) ||
+            [],
+          searchQuery: item.name ?? "",
+        }))
+      );
 
       return mappedData;
     } catch (error) {

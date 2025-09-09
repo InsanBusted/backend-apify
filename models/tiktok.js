@@ -4,18 +4,18 @@ import GetData from "./getData.js";
 import { TASKS } from "../lib/utils/taskId.js";
 
 class Tiktok {
-  static async fetchData() {
+  static async fetchData({ input }) {
     try {
       const client = new ApifyClient({
         token: process.env.APIFY_TOKEN,
       });
 
-      const input = {
+      const taskInput = {
         excludePinnedPosts: false,
         newestPostDate: "2025-09-08",
         oldestPostDateUnified: "2025-07-06",
         profileScrapeSections: ["videos"],
-        profiles: ["berlofficial"],
+        profiles: Array.isArray(input) ? input : [input],
         resultsPerPage: 20,
         shouldDownloadAvatars: false,
         shouldDownloadCovers: false,
@@ -24,7 +24,7 @@ class Tiktok {
         shouldDownloadVideos: false,
       };
 
-      const run = await client.task(TASKS.getEvalTiktok).call(input);
+      const run = await client.task(TASKS.getEvalTiktok).call(taskInput);
       const items = await GetData.getDataDetailKonten(run.defaultDatasetId);
       const mappedData = mapTikTokData(items, run.defaultDatasetId);
 

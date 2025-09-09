@@ -77,7 +77,7 @@ const router = Router();
  *                               example: "fyp"
  */
 
-router.get("/tiktok/run", TiktokController.index);
+router.post("/tiktok/run", TiktokController.index);
 
 /**
  * @swagger
@@ -191,6 +191,7 @@ router.post("/tiktok/run-reference", TiktokController.reference);
  *         description: Detail konten berhasil diambil
  */
 router.post("/tiktok/run-detail", TiktokController.getDetailKonten);
+router.post("/instagram/run-detail", InstagramController.getDetailKonten);
 
 /**
  * @swagger

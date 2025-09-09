@@ -4,7 +4,19 @@ import Tiktok from "../models/tiktok.js";
 class TiktokController {
   static async index(req, res) {
     try {
-      const data = await Tiktok.fetchData();
+      let { input } = req.body;
+
+      if (typeof input === "string") {
+        input = input.split(/\s+/);
+      }
+
+      if (!Array.isArray(input) || input.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: "input must be a non-empty string or array",
+        });
+      }
+      const data = await Tiktok.fetchData({input});
       res.status(200).json({ success: true, data });
     } catch (error) {
       res.status(500).json({
@@ -24,7 +36,6 @@ class TiktokController {
           .map((s) => s.trim())
           .filter((s) => s !== "");
       }
-
 
       if (!Array.isArray(searchQueries) || searchQueries.length === 0) {
         return res.status(400).json({
