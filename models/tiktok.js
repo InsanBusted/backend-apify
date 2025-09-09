@@ -14,7 +14,7 @@ class Tiktok {
         excludePinnedPosts: false,
         newestPostDate: "2025-09-08",
         oldestPostDateUnified: "2025-07-06",
-        profileScrapeSections: ["latest"],
+        profileScrapeSections: ["videos"],
         profiles: ["berlofficial"],
         resultsPerPage: 20,
         shouldDownloadAvatars: false,

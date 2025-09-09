@@ -150,6 +150,7 @@ class DatasetController {
         datasetId: video.datasetId,
         author: video.author,
         iklan: video.isAd,
+        location: video.location,
         coverVideo: video.coverVideo,
         webVideoUrl: video.webVideoUrl,
         shareCount: video.shareCount,

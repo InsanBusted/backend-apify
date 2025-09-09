@@ -56,6 +56,7 @@ class GetData {
         author: post.ownerUsername,
         iklan: post.isSponsored,
         text: post.caption ?? "",
+        location: post.locationName,
         createTimeISO: post.timestamp,
         likeCount: post.likesCount ?? 0,
         commentCount: post.commentsCount ?? 0,

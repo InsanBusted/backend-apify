@@ -12,6 +12,7 @@ model Video {
   // tiktokId     String          @unique @map("tiktok_id")
   author       String          @map("author")
   datasetId    String?         @map("dataset_id") 
+  location     String?         @map("location") 
   createTime   DateTime        @map("create_time") 
   coverVideo   String          @map("coverVideo")
   webVideoUrl  String          @unique @map("web_video_url")

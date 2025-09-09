@@ -15,6 +15,7 @@ class InstagramController {
             datasetId,
             createTime: new Date(item.createTimeISO),
             author: item.author,
+            location: item.location,
             isAd: item.iklan,
             webVideoUrl: item.webVideoUrl,
             playCount: item.playCount,
