@@ -2,7 +2,7 @@ import serverless from "serverless-http";
 import express from "express";
 import tiktokRoutes from "../routes/api.js";
 import cors from "cors";
-import { swaggerUi, specs } from "../swagger.js";
+// import { swaggerUi, specs } from "../swagger.js";
 
 const app = express();
 
@@ -16,6 +16,6 @@ app.get("/", (req, res) => {
 });
 
 // Swagger docs
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
+// app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 export default serverless(app);
