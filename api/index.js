@@ -1,11 +1,9 @@
 import serverless from "serverless-http";
 import express from "express";
-import dotenv from "dotenv";
 import tiktokRoutes from "../routes/api.js";
 import cors from "cors";
 import { swaggerUi, specs } from "../swagger.js";
 
-dotenv.config();
 const app = express();
 
 app.use(cors());
