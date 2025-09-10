@@ -88,24 +88,27 @@ class GetData {
 
       const items = await response.json();
 
-      const mappedData = items.map((item) => ({
-        id: item.id,
-        author: item.author || item.ownerUsername || "",
-        iklan: item.iklan ?? item.isSponsored ?? false,
-        text: item.text || item.caption || "",
-        location: item.location || item.locationName || "",
-        createTimeISO: item.createTimeISO || item.timestamp,
-        likeCount: item.likeCount ?? item.likesCount ?? 0,
-        commentCount: item.commentCount ?? item.commentsCount ?? 0,
-        shareCount: item.shareCount ?? item.reshareCount ?? 0,
-        playCount: item.playCount ?? item.videoPlayCount ?? 0,
-        collectCount: item.collectCount ?? item.reshareCount ?? 0,
-        webVideoUrl: item.webVideoUrl || item.url || "",
-        coverVideo: item.coverVideo || item.displayUrl || "",
-        hashtags:
-          item.hashtags?.map((h) => (typeof h === "string" ? h : h.name)) || [],
-        searchQuery: item.searchQuery || item.name || "",
-      }));
+       const mappedData = items.flatMap((item) =>
+        (item.topPosts || []).map((post) => ({
+          id: post.id,
+          author: post.ownerUsername,
+          iklan: post.isSponsored,
+          text: post.caption ?? "",
+          location: post.locationName,
+          createTimeISO: post.timestamp,
+          likeCount: post.likesCount ?? 0,
+          commentCount: post.commentsCount ?? 0,
+          shareCount: post.reshareCount ?? 0,
+          playCount: post.videoPlayCount ?? 0,
+          collectCount: post.reshareCount ?? 0,
+          webVideoUrl: post.url ?? "",
+          coverVideo: post.displayUrl ?? "",
+          hashtags:
+            post.hashtags?.map((h) => (typeof h === "string" ? h : h.name)) ||
+            [],
+          searchQuery: item.name ?? "",
+        }))
+      );
 
 
       return mappedData;
