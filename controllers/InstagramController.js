@@ -106,7 +106,7 @@ class InstagramController {
 
           if (item.hashtags?.length) {
             const hashtags = item.hashtags
-              .map((tag) => tag.name?.trim())
+              .map((tag) => (typeof tag === "string" ? tag.trim() : tag?.name?.trim()))
               .filter(Boolean);
 
             if (hashtags.length > 0) {
@@ -128,6 +128,7 @@ class InstagramController {
               });
             }
           }
+
         })
       );
 
@@ -145,7 +146,7 @@ class InstagramController {
     }
   }
 
-    static async getDetailKonten(req, res) {
+  static async getDetailKonten(req, res) {
     try {
       let { postUrl } = req.body;
 
