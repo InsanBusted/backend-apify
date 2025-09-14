@@ -16,6 +16,42 @@ class GetData {
 
       const mappedData = items.map((item) => ({
         id: item.id,
+        author: item.channel?.name ?? "",
+        iklan: item.isAd ?? false,
+        text: item.title ?? "",
+        createTimeISO: item.uploadedAtFormatted ?? "",
+        likeCount: item.likes ?? 0,
+        webVideoUrl: item.postPage ?? "",
+        shareCount: item.shares ?? 0,
+        playCount: item.views ?? 0,
+        collectCount: item.bookmarks ?? 0,
+        commentCount: item.comments ?? 0,
+        searchQuery: item.searchQuery ?? "",
+        coverVideo: item.video?.cover ?? "",
+        hashtags: item.hashtags?.map((h) => ({ name: h })) || [],
+      }));
+
+      return mappedData;
+    } catch (error) {
+      console.error(`Error fetching data dari API: ${error.message}`);
+      throw error;
+    }
+  }
+
+  static async getDataDetailKontenPost(datasetId) {
+    try {
+      const response = await fetch(
+        `https://api.apify.com/v2/datasets/${datasetId}/items?token=${process.env.APIFY_TOKEN}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`API error ${response.status}`);
+      }
+
+      const items = await response.json();
+
+      const mappedData = items.map((item) => ({
+        id: item.id,
         author: item.authorMeta?.name,
         iklan: item.isAd,
         text: item.text ?? "",
@@ -88,7 +124,7 @@ class GetData {
 
       const items = await response.json();
 
-       const mappedData = items.flatMap((item) =>
+      const mappedData = items.flatMap((item) =>
         (item.topPosts || []).map((post) => ({
           id: post.id,
           author: post.ownerUsername,
@@ -109,7 +145,6 @@ class GetData {
           searchQuery: item.name ?? "",
         }))
       );
-
 
       return mappedData;
     } catch (error) {

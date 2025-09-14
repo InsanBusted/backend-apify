@@ -175,8 +175,9 @@ class InstagramController {
   static async reference(req, res) {
     try {
       let { search } = req.body;
+      let { onlyPostsNewerThan } = req.body;
 
-      const data = await Instagram.fetchReferenceDataInstagram({ search });
+      const data = await Instagram.fetchReferenceDataInstagram({ search, onlyPostsNewerThan });
       res.status(200).json({ success: true, data });
     } catch (error) {
       res.status(500).json({

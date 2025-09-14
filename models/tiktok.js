@@ -12,11 +12,11 @@ class Tiktok {
 
       const taskInput = {
         excludePinnedPosts: false,
-        newestPostDate: "2025-09-08",
-        oldestPostDateUnified: "2025-07-06",
+        newestPostDate: "2025-09-14",
+        oldestPostDateUnified: "2025-01-01",
         profileScrapeSections: ["videos"],
         profiles: Array.isArray(input) ? input : [input],
-        resultsPerPage: 20,
+        resultsPerPage: 50,
         shouldDownloadAvatars: false,
         shouldDownloadCovers: false,
         shouldDownloadSlideshowImages: false,
@@ -25,7 +25,7 @@ class Tiktok {
       };
 
       const run = await client.task(TASKS.getEvalTiktok).call(taskInput);
-      const items = await GetData.getDataDetailKonten(run.defaultDatasetId);
+      const items = await GetData.getDataDetailKontenPost(run.defaultDatasetId);
       const mappedData = mapTikTokData(items, run.defaultDatasetId);
 
       return mappedData;
@@ -62,28 +62,22 @@ class Tiktok {
     }
   }
 
-  static async fetchReferenceData({ searchQueries }) {
+  static async fetchReferenceData({ searchQueries, sort, time }) {
     try {
       const client = new ApifyClient({
         token: process.env.APIFY_TOKEN,
       });
 
       const input = {
-        excludePinnedPosts: false,
-        maxProfilesPerQuery: 5,
-        profileSorting: "latest",
-        proxyCountryCode: "ID",
-        resultsPerPage: 5,
-        scrapeRelatedVideos: false,
-        searchQueries: Array.isArray(searchQueries)
+        customMapFunction: "(object) => { return {...object} }",
+        dateRange: time,
+        includeSearchKeywords: false,
+        keywords: Array.isArray(searchQueries)
           ? searchQueries
           : [searchQueries],
-        shouldDownloadAvatars: false,
-        shouldDownloadCovers: false,
-        shouldDownloadMusicCovers: false,
-        shouldDownloadSlideshowImages: false,
-        shouldDownloadSubtitles: false,
-        shouldDownloadVideos: false,
+        location: "ID",
+        // maxItems: 5,
+        sortType: sort,
       };
 
       const run = await client.task(TASKS.referensiTiktok).call(input);

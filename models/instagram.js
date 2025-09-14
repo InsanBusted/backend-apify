@@ -5,7 +5,7 @@ import { mapInstagramData } from "../lib/utils/mapInstagramData.js";
 import { TASKS } from "../lib/utils/taskId.js";
 
 class Instagram {
-  static async fetchReferenceDataInstagram({ search }) {
+  static async fetchReferenceDataInstagram({ search, onlyPostsNewerThan }) {
     try {
       const client = new ApifyClient({
         token: process.env.APIFY_TOKEN,
@@ -16,12 +16,11 @@ class Instagram {
         enhanceUserSearchWithFacebookPage: false,
         isUserReelFeedURL: false,
         isUserTaggedFeedURL: false,
+        onlyPostsNewerThan: onlyPostsNewerThan,
         resultsLimit: 5,
-        resultsType: "posts",
         search: search,
         searchLimit: 1,
       };
-
       const run = await client.task(TASKS.referensiInstagram).call(input);
       const items = await GetData.getDataDetailKontenInstagram(
         run.defaultDatasetId

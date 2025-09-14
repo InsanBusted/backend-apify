@@ -30,6 +30,8 @@ class TiktokController {
   static async reference(req, res) {
     try {
       let { searchQueries } = req.body;
+      let { sort } = req.body;
+      let { time } = req.body;
       if (typeof searchQueries === "string") {
         searchQueries = searchQueries
           .split(/\n+/)
@@ -44,7 +46,7 @@ class TiktokController {
         });
       }
 
-      const data = await Tiktok.fetchReferenceData({ searchQueries });
+      const data = await Tiktok.fetchReferenceData({ searchQueries, sort, time });
       res.status(200).json({ success: true, data });
     } catch (error) {
       res.status(500).json({
