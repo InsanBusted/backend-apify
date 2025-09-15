@@ -12,8 +12,8 @@ class Tiktok {
 
       const taskInput = {
         excludePinnedPosts: false,
-        newestPostDate: "2025-09-14",
-        oldestPostDateUnified: "2025-01-01",
+        newestPostDate: "2025-09-15",
+        oldestPostDateUnified: "2024-09-15",
         profileScrapeSections: ["videos"],
         profiles: Array.isArray(input) ? input : [input],
         resultsPerPage: 50,
