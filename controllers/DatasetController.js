@@ -29,6 +29,7 @@ class DatasetController {
             shareCount: item.shareCount,
             collectCount: item.collectCount,
             commentCount: item.commentCount,
+            data: 'referensi'
           };
 
           const video = await prisma.video.upsert({
@@ -104,6 +105,7 @@ class DatasetController {
             shareCount: item.shareCount,
             collectCount: item.collectCount,
             commentCount: item.commentCount,
+            data: 'bank konten'
           };
 
           const video = await prisma.video.create({

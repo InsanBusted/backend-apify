@@ -22,6 +22,7 @@ model Video {
   collectCount Int      @map("collect_count")
   commentCount Int      @map("comment_count")
   searchQuery  String   @map("search_query")
+  source       String   @default("bank-konten") @map("source")
 
   hashtags VideoHashtag[]
   isAd     Boolean?
