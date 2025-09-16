@@ -154,7 +154,7 @@ class DatasetController {
       const { datasetId, author } = req.query;
 
       const latestPerLink = await prisma.video.groupBy({
-        by: ['webVideoUrl'], 
+        by: ['webVideoUrl'],
         _max: { createDate: true },
         where: {
           ...(datasetId && { datasetId: String(datasetId) }),

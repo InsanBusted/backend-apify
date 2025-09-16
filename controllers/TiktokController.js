@@ -5,6 +5,8 @@ class TiktokController {
   static async index(req, res) {
     try {
       let { input } = req.body;
+      let { startDate } = req.body;
+      let { endDate } = req.body;
 
       if (typeof input === "string") {
         input = input.split(/\s+/);
@@ -16,7 +18,7 @@ class TiktokController {
           message: "input must be a non-empty string or array",
         });
       }
-      const data = await Tiktok.fetchData({input});
+      const data = await Tiktok.fetchData({input, startDate, endDate});
       res.status(200).json({ success: true, data });
     } catch (error) {
       res.status(500).json({

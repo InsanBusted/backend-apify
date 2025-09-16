@@ -4,7 +4,7 @@ import GetData from "./getData.js";
 import { TASKS } from "../lib/utils/taskId.js";
 
 class Tiktok {
-  static async fetchData({ input }) {
+  static async fetchData({ input, startDate, endDate }) {
     try {
       const client = new ApifyClient({
         token: process.env.APIFY_TOKEN,
@@ -12,8 +12,8 @@ class Tiktok {
 
       const taskInput = {
         excludePinnedPosts: false,
-        newestPostDate: "2025-09-16",
-        oldestPostDateUnified: "2025-08-15",
+        newestPostDate: endDate || new Date(),
+        oldestPostDateUnified: startDate || new Date(),
         profileScrapeSections: ["videos"],
         profiles: Array.isArray(input) ? input : [input],
         resultsPerPage: 50,
