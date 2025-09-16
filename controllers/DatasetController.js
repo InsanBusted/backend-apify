@@ -95,6 +95,7 @@ class DatasetController {
             createTime: new Date(item.createTimeISO),
             author: item.author,
             isAd: item.iklan,
+            createDate: item.createDate,
             webVideoUrl: item.webVideoUrl,
             playCount: item.playCount,
             coverVideo: item.coverVideo,
@@ -105,10 +106,8 @@ class DatasetController {
             commentCount: item.commentCount,
           };
 
-          const video = await prisma.video.upsert({
-            where: { webVideoUrl: item.webVideoUrl },
-            update: videoData,
-            create: { webVideoUrl: item.webVideoUrl, ...videoData },
+          const video = await prisma.video.create({
+              data: videoData,
           });
 
           if (item.hashtags?.length) {

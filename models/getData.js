@@ -48,6 +48,7 @@ class GetData {
         throw new Error(`API error ${response.status}`);
       }
 
+
       const items = await response.json();
 
       const mappedData = items.map((item) => ({
@@ -56,6 +57,7 @@ class GetData {
         iklan: item.isAd,
         text: item.text ?? "",
         createTimeISO: item.createTimeISO,
+        createDate: new Date(),
         likeCount: item.diggCount ?? 0,
         webVideoUrl: item.webVideoUrl ?? "",
         shareCount: item.shareCount ?? 0,

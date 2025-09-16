@@ -8,54 +8,53 @@ datasource db {
 }
 
 model Video {
-  id           String          @id @default(uuid()) @db.Uuid
-  // tiktokId     String          @unique @map("tiktok_id")
-  author       String          @map("author")
-  datasetId    String?         @map("dataset_id") 
-  location     String?         @map("location") 
-  createTime   DateTime        @map("create_time") 
-  coverVideo   String          @map("coverVideo")
-  webVideoUrl  String          @unique @map("web_video_url")
-  shareCount   Int             @map("share_count")
-  likeCount    Int             @map("like_count") 
-  playCount    Int             @map("play_count")
-  collectCount Int             @map("collect_count")
-  commentCount Int             @map("comment_count")
-  searchQuery String           @map("search_query")
+  id           String   @id @default(uuid()) @db.Uuid
+  author       String   @map("author")
+  datasetId    String?  @map("dataset_id")
+  location     String?  @map("location")
+  createTime   DateTime @map("create_time")
+  createDate   DateTime @default(now()) @map("create_date")
+  coverVideo   String   @map("coverVideo")
+  webVideoUrl  String   @map("web_video_url")
+  shareCount   Int      @map("share_count")
+  likeCount    Int      @map("like_count")
+  playCount    Int      @map("play_count")
+  collectCount Int      @map("collect_count")
+  commentCount Int      @map("comment_count")
+  searchQuery  String   @map("search_query")
 
-  hashtags     VideoHashtag[]
-  isAd         Boolean?         
+  hashtags VideoHashtag[]
+  isAd     Boolean?
 
-  @@map("videos")
   @@index([datasetId])
   @@index([createTime])
+  @@map("videos")
+  @@index([createDate])
 }
 
 model Hashtag {
-  id       Int             @id @default(autoincrement())
-  name     String          @unique
+  id   Int    @id @default(autoincrement())
+  name String @unique
 
-  videos   VideoHashtag[]
+  videos VideoHashtag[]
 
   @@map("hashtags")
 }
 
-
-
 model n8n_chat_histories {
   id         Int    @id @default(autoincrement())
   session_id String
-  message    Json   
+  message    Json
+
   @@map("n8n_chat_histories")
 }
 
-
 model VideoHashtag {
-  videoId   String  @db.Uuid
+  videoId   String @db.Uuid
   hashtagId Int
 
-  video     Video   @relation(fields: [videoId], references: [id])
-  hashtag   Hashtag @relation(fields: [hashtagId], references: [id])
+  video   Video   @relation(fields: [videoId], references: [id])
+  hashtag Hashtag @relation(fields: [hashtagId], references: [id])
 
   @@id([videoId, hashtagId])
   @@map("video_hashtags")
