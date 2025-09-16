@@ -32,7 +32,6 @@ class DatasetController {
             source: 'referensi',
           };
 
-          // Cari video yang matching webVideoUrl + source='referensi'
           const existingVideo = await prisma.video.findFirst({
             where: {
               webVideoUrl: item.webVideoUrl,
@@ -43,19 +42,16 @@ class DatasetController {
 
           let video;
           if (existingVideo) {
-            // Update record yang sudah ada
             video = await prisma.video.update({
               where: { id: existingVideo.id },
               data: videoData,
             });
           } else {
-            // Buat record baru
             video = await prisma.video.create({
               data: videoData,
             });
           }
 
-          // Handle hashtags
           if (item.hashtags?.length) {
             const hashtags = item.hashtags
               .map((tag) => tag.name?.trim())
