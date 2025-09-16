@@ -252,7 +252,7 @@ router.post("/instagram/run-reference", InstagramController.reference);
  *         description: Data Instagram berhasil diambil
  */
 router.get("/instagram/:datasetId", InstagramController.getData);
-router.get("/instagram/detail/:datasetId", InstagramController.getDataDetail);
+router.get("/instagram/detail/:datasetId", InstagramController.getDataDetailAnalisis);
 
 
 /**

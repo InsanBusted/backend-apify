@@ -25,13 +25,114 @@ class InstagramController {
             shareCount: item.shareCount,
             collectCount: item.collectCount,
             commentCount: item.commentCount,
+            source: 'referensi',
           };
 
-          const video = await prisma.video.upsert({
-            where: { webVideoUrl: item.webVideoUrl },
-            update: videoData,
-            create: { webVideoUrl: item.webVideoUrl, ...videoData },
+          const existingVideo = await prisma.video.findFirst({
+            where: {
+              webVideoUrl: item.webVideoUrl,
+              source: 'referensi',
+            },
+            orderBy: { createTime: 'desc' },
           });
+
+          let video;
+          if (existingVideo) {
+            video = await prisma.video.update({
+              where: { id: existingVideo.id },
+              data: videoData,
+            });
+          } else {
+            video = await prisma.video.create({
+              data: videoData,
+            });
+          }
+
+          if (item.hashtags?.length) {
+            const hashtags = item.hashtags
+              .map((tag) => tag.name?.trim())
+              .filter(Boolean);
+
+            if (hashtags.length > 0) {
+              await prisma.hashtag.createMany({
+                data: hashtags.map((name) => ({ name })),
+                skipDuplicates: true,
+              });
+
+              const allTags = await prisma.hashtag.findMany({
+                where: { name: { in: hashtags } },
+              });
+
+              await prisma.videoHashtag.createMany({
+                data: allTags.map((tag) => ({
+                  videoId: video.id,
+                  hashtagId: tag.id,
+                })),
+                skipDuplicates: true,
+              });
+            }
+          }
+        })
+      );
+
+      return res.status(200).json({
+        success: true,
+        message: `Dataset saved successfully: ${data.length} videos`,
+      });
+    } catch (error) {
+      console.error("getData error:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Terjadi kesalahan",
+        error: error.message,
+      });
+    }
+  }
+
+  static async getDataDetailAnalisis(req, res) {
+    try {
+      let { datasetId } = req.params;
+
+      const data = await GetData.getDataDetailKontenInstagramPost(datasetId);
+
+      await Promise.all(
+        data.map(async (item) => {
+          const videoData = {
+            datasetId,
+            createTime: new Date(item.createTimeISO),
+            author: item.author,
+            location: item.location,
+            isAd: item.iklan,
+            webVideoUrl: item.webVideoUrl,
+            playCount: item.playCount,
+            coverVideo: item.coverVideo,
+            searchQuery: item.searchQuery,
+            likeCount: item.likeCount ?? 0,
+            shareCount: item.shareCount,
+            collectCount: item.collectCount,
+            commentCount: item.commentCount,
+            source: 'analisis',
+          };
+
+          const existingVideo = await prisma.video.findFirst({
+            where: {
+              webVideoUrl: item.webVideoUrl,
+              source: 'analisis',
+            },
+            orderBy: { createTime: 'desc' },
+          });
+
+          let video;
+          if (existingVideo) {
+            video = await prisma.video.update({
+              where: { id: existingVideo.id },
+              data: videoData,
+            });
+          } else {
+            video = await prisma.video.create({
+              data: videoData,
+            });
+          }
 
           if (item.hashtags?.length) {
             const hashtags = item.hashtags
