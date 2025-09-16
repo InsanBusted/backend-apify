@@ -107,7 +107,7 @@ class DatasetController {
           };
 
           const video = await prisma.video.create({
-              data: videoData,
+            data: videoData,
           });
 
           if (item.hashtags?.length) {
@@ -151,25 +151,33 @@ class DatasetController {
 
   static async getAllData(req, res) {
     try {
-      const { datasetId, author } = req.query;
-      const videos = await prisma.video.findMany({
-         where: {
-        ...(datasetId && { datasetId: String(datasetId) }),
-        ...(author && { author: String(author) }),
-      },
+      const { author } = req.query;
+
+      if (!author) {
+        return res.status(400).json({ success: false, error: "author is required" });
+      }
+
+      // Ambil 1 video terbaru berdasarkan createDate
+      const video = await prisma.video.findFirst({
+        where: {
+          author: { equals: String(author), mode: "insensitive" },
+        },
         include: {
           hashtags: {
-            include: {
-              hashtag: true,
-            },
+            include: { hashtag: true },
           },
         },
         orderBy: {
-          createDate: "desc",
+          createDate: "desc", // video terbaru berdasarkan waktu masuk DB
         },
       });
 
-      const data = videos.map((video) => ({
+      if (!video) {
+        return res.status(404).json({ success: false, data: [], message: "No video found for this author" });
+      }
+
+      // Mapping data sesuai format API
+      const data = {
         id: video.tiktokId,
         datasetId: video.datasetId,
         author: video.author,
@@ -184,28 +192,23 @@ class DatasetController {
         searchQuery: video.searchQuery ?? "",
         createTimeISO: video.createTime.toISOString(),
         hashtags: video.hashtags.map((h) => ({ name: h.hashtag.name })),
-      }));
+      };
 
-      res.status(200).json({
-        success: true,
-        data,
-      });
+      res.status(200).json({ success: true, data });
     } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: error.message,
-      });
+      res.status(500).json({ success: false, error: error.message });
     }
   }
-  
+
+
   static async getAllDataInstagram(req, res) {
     try {
       const { datasetId, author } = req.query;
       const videos = await prisma.video.findMany({
-         where: {
-        ...(datasetId && { datasetId: String(datasetId) }),
-        ...(author && { author: String(author) }),
-      },
+        where: {
+          ...(datasetId && { datasetId: String(datasetId) }),
+          ...(author && { author: String(author) }),
+        },
         include: {
           hashtags: {
             include: {
