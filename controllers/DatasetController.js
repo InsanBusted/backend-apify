@@ -167,7 +167,6 @@ class DatasetController {
         orderBy: {
           createDate: "desc",
         },
-        take: 1
       });
 
       const data = videos.map((video) => ({
