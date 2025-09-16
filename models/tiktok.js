@@ -76,7 +76,7 @@ class Tiktok {
           ? searchQueries
           : [searchQueries],
         location: "ID",
-        // maxItems: 5,
+        maxItems: 50,
         sortType: sort,
       };
 

@@ -29,15 +29,33 @@ class DatasetController {
             shareCount: item.shareCount,
             collectCount: item.collectCount,
             commentCount: item.commentCount,
-            data: 'referensi'
+            source: 'referensi',
           };
 
-          const video = await prisma.video.upsert({
-            where: { webVideoUrl: item.webVideoUrl },
-            update: videoData,
-            create: { webVideoUrl: item.webVideoUrl, ...videoData },
+          // Cari video yang matching webVideoUrl + source='referensi'
+          const existingVideo = await prisma.video.findFirst({
+            where: {
+              webVideoUrl: item.webVideoUrl,
+              source: 'referensi',
+            },
+            orderBy: { createTime: 'desc' },
           });
 
+          let video;
+          if (existingVideo) {
+            // Update record yang sudah ada
+            video = await prisma.video.update({
+              where: { id: existingVideo.id },
+              data: videoData,
+            });
+          } else {
+            // Buat record baru
+            video = await prisma.video.create({
+              data: videoData,
+            });
+          }
+
+          // Handle hashtags
           if (item.hashtags?.length) {
             const hashtags = item.hashtags
               .map((tag) => tag.name?.trim())
@@ -77,6 +95,8 @@ class DatasetController {
     }
   }
 
+
+
   static async getDetailData(req, res) {
     try {
       const { datasetId } = req.params;
@@ -105,7 +125,7 @@ class DatasetController {
             shareCount: item.shareCount,
             collectCount: item.collectCount,
             commentCount: item.commentCount,
-            data: 'bank konten'
+            source: 'bank-konten'
           };
 
           const video = await prisma.video.create({
