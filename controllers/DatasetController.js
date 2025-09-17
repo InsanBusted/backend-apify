@@ -166,6 +166,79 @@ class DatasetController {
       });
     }
   }
+  static async getDetailDataAnalisis(req, res) {
+    try {
+      const { datasetId } = req.params;
+
+      if (!datasetId) {
+        return res
+          .status(400)
+          .json({ success: false, error: "datasetId wajib ada" });
+      }
+
+      const data = await GetData.getDataDetailKontenPost(datasetId);
+
+      await Promise.all(
+        data.map(async (item) => {
+          const videoData = {
+            datasetId,
+            createTime: new Date(item.createTimeISO),
+            author: item.author,
+            isAd: item.iklan,
+            createDate: item.createDate,
+            webVideoUrl: item.webVideoUrl,
+            playCount: item.playCount,
+            coverVideo: item.coverVideo,
+            searchQuery: item.searchQuery,
+            likeCount: item.likeCount ?? 0,
+            shareCount: item.shareCount,
+            collectCount: item.collectCount,
+            commentCount: item.commentCount,
+            source: 'analisis'
+          };
+
+          const video = await prisma.video.create({
+            data: videoData,
+          });
+
+          if (item.hashtags?.length) {
+            const hashtags = item.hashtags
+              .map((tag) => tag.name?.trim())
+              .filter(Boolean);
+
+            if (hashtags.length > 0) {
+              await prisma.hashtag.createMany({
+                data: hashtags.map((name) => ({ name })),
+                skipDuplicates: true,
+              });
+
+              const allTags = await prisma.hashtag.findMany({
+                where: { name: { in: hashtags } },
+              });
+
+              await prisma.videoHashtag.createMany({
+                data: allTags.map((tag) => ({
+                  videoId: video.id,
+                  hashtagId: tag.id,
+                })),
+                skipDuplicates: true,
+              });
+            }
+          }
+        })
+      );
+
+      res.status(200).json({
+        success: true,
+        message: `Dataset saved successfully: ${data.length} videos`,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: error.message,
+      });
+    }
+  }
 
   static async getAllData(req, res) {
     try {

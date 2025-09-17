@@ -272,6 +272,7 @@ router.get("/instagram/detail/:datasetId", InstagramController.getDataDetailAnal
  *         description: Detail data TikTok berhasil diambil
  */
 router.get("/tiktok/:datasetId", DatasetController.getDetailData);
+router.get("/tiktok/detail/:datasetId", DatasetController.getDetailDataAnalisis);
 router.get("/tiktok/referensi/:datasetId", DatasetController.getDetailDataReferensi);
 
 export default router;
