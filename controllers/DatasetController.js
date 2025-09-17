@@ -292,6 +292,70 @@ class DatasetController {
     }
   }
 
+  static async getAllDataBankData(req, res) {
+    try {
+      const { datasetId, author, startDate, endDate } = req.query;
+
+      let timeFilter = {};
+      if (startDate && endDate) {
+        timeFilter.createTime = {
+          gte: new Date(startDate),
+          lte: new Date(new Date(endDate).setHours(23, 59, 59, 999)),
+        };
+      } else if (startDate) {
+        timeFilter.createTime = { gte: new Date(startDate) };
+      } else if (endDate) {
+        timeFilter.createTime = { lte: new Date(new Date(endDate).setHours(23, 59, 59, 999)) };
+      }
+
+      const latestPerLink = await prisma.video.groupBy({
+        by: ['webVideoUrl'],
+        _max: { createDate: true },
+        where: {
+          ...(datasetId && { datasetId: String(datasetId) }),
+          ...(author && { author: String(author) }),
+          ...timeFilter, 
+        },
+      });
+
+      const videos = await Promise.all(
+        latestPerLink.map((v) =>
+          prisma.video.findFirst({
+            where: {
+              webVideoUrl: v.webVideoUrl,
+              createDate: v._max.createDate, 
+            },
+            include: {
+              hashtags: { include: { hashtag: true } },
+            },
+          })
+        )
+      );
+
+      const data = videos.map((video) => ({
+        id: video.tiktokId,
+        datasetId: video.datasetId,
+        author: video.author,
+        iklan: video.isAd,
+        coverVideo: video.coverVideo,
+        webVideoUrl: video.webVideoUrl,
+        shareCount: video.shareCount,
+        playCount: video.playCount,
+        likeCount: video.likeCount,
+        collectCount: video.collectCount,
+        commentCount: video.commentCount,
+        searchQuery: video.searchQuery ?? "",
+        createTimeISO: video.createTime.toISOString(), 
+        hashtags: video.hashtags.map((h) => ({ name: h.hashtag.name })),
+      }));
+
+      res.status(200).json({ success: true, data });
+    } catch (error) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  }
+
+
   static async getAllDataInstagram(req, res) {
     try {
       const { datasetId, author } = req.query;

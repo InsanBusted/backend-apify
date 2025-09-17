@@ -203,6 +203,7 @@ router.post("/instagram/run-detail", InstagramController.getDetailKonten);
  *         description: Semua konten TikTok berhasil diambil
  */
 router.get("/tiktok/konten", DatasetController.getAllData);
+router.get("/tiktok/konten/bankData", DatasetController.getAllDataBankData);
 
 /**
  * @swagger
