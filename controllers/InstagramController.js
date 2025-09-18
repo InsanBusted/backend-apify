@@ -3,6 +3,34 @@ import GetData from "../models/getData.js";
 import Instagram from "../models/instagram.js";
 
 class InstagramController {
+
+  static async index(req, res) {
+    try {
+      let { search, onlyPostsNewerThan } = req.body;
+
+      // pastikan search jadi array of string
+      if (typeof search === "string") {
+        search = search.split(/\s+/); // <-- fix disini
+      } else if (!Array.isArray(search)) {
+        return res.status(400).json({
+          success: false,
+          message: "search must be a string or an array of usernames",
+        });
+      }
+
+      const data = await Instagram.fetchData({ search, onlyPostsNewerThan });
+      res.status(200).json({ success: true, data });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "error fetch",
+        error: error.message,
+      });
+    }
+  }
+
+
+
   static async getData(req, res) {
     try {
       let { datasetId } = req.params;
@@ -102,6 +130,7 @@ class InstagramController {
             createTime: new Date(item.createTimeISO),
             author: item.author,
             location: item.location,
+            createDate: new Date(),
             isAd: item.iklan,
             webVideoUrl: item.webVideoUrl,
             playCount: item.playCount,
@@ -114,10 +143,80 @@ class InstagramController {
             source: 'analisis',
           };
 
+          const video = await prisma.video.create({
+            data: videoData,
+          });
+
+          if (item.hashtags?.length) {
+            const hashtags = item.hashtags
+              .map((tag) => tag.name?.trim())
+              .filter(Boolean);
+
+            if (hashtags.length > 0) {
+              await prisma.hashtag.createMany({
+                data: hashtags.map((name) => ({ name })),
+                skipDuplicates: true,
+              });
+
+              const allTags = await prisma.hashtag.findMany({
+                where: { name: { in: hashtags } },
+              });
+
+              await prisma.videoHashtag.createMany({
+                data: allTags.map((tag) => ({
+                  videoId: video.id,
+                  hashtagId: tag.id,
+                })),
+                skipDuplicates: true,
+              });
+            }
+          }
+        })
+      );
+
+      return res.status(200).json({
+        success: true,
+        message: `Dataset saved successfully: ${data.length} videos`,
+      });
+    } catch (error) {
+      console.error("getData error:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Terjadi kesalahan",
+        error: error.message,
+      });
+    }
+  }
+
+  static async getDataDetailInstagram(req, res) {
+    try {
+      let { datasetId } = req.params;
+
+      const data = await GetData.getDataDetailKontenInstagramPost(datasetId);
+
+      await Promise.all(
+        data.map(async (item) => {
+          const videoData = {
+            datasetId,
+            createTime: new Date(item.createTimeISO),
+            author: item.author,
+            location: item.location,
+            isAd: item.iklan,
+            webVideoUrl: item.webVideoUrl,
+            playCount: item.playCount,
+            coverVideo: item.coverVideo,
+            searchQuery: item.searchQuery,
+            likeCount: item.likeCount ?? 0,
+            shareCount: item.shareCount,
+            collectCount: item.collectCount,
+            commentCount: item.commentCount,
+            source: 'bank-data',
+          };
+
           const existingVideo = await prisma.video.findFirst({
             where: {
               webVideoUrl: item.webVideoUrl,
-              source: 'analisis',
+              source: 'bank-data',
             },
             orderBy: { createTime: 'desc' },
           });

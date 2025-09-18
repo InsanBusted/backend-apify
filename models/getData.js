@@ -91,7 +91,7 @@ class GetData {
       const mappedData = items.map((item) => ({
         id: item.id,
         author: item.ownerUsername,
-        iklan: item.isSponsored,
+        iklan: false,
         text: item.caption ?? "",
         location: item.locationName,
         createTimeISO: item.timestamp,

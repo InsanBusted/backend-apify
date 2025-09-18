@@ -78,6 +78,7 @@ const router = Router();
  */
 
 router.post("/tiktok/run", TiktokController.index);
+router.post("/instagram/run", InstagramController.index);
 
 /**
  * @swagger
@@ -215,6 +216,7 @@ router.get("/tiktok/konten/bankData", DatasetController.getAllDataBankData);
  *         description: Semua konten Instagram berhasil diambil
  */
 router.get("/instagram/konten", DatasetController.getAllDataInstagram);
+router.get("/instagram/konten/bankData", DatasetController.getAllDataInstagramBankData);
 
 /**
  * @swagger
@@ -254,6 +256,7 @@ router.post("/instagram/run-reference", InstagramController.reference);
  */
 router.get("/instagram/:datasetId", InstagramController.getData);
 router.get("/instagram/detail/:datasetId", InstagramController.getDataDetailAnalisis);
+router.get("/instagram/detail/bankdata/:datasetId", InstagramController.getDataDetailInstagram);
 
 
 /**
