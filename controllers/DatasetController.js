@@ -298,14 +298,14 @@ class DatasetController {
 
       let timeFilter = {};
       if (startDate && endDate) {
-        timeFilter.createTime = {
+        timeFilter.createDate = {
           gte: new Date(startDate),
           lte: new Date(new Date(endDate).setHours(23, 59, 59, 999)),
         };
       } else if (startDate) {
-        timeFilter.createTime = { gte: new Date(startDate) };
+        timeFilter.createDate = { gte: new Date(startDate) };
       } else if (endDate) {
-        timeFilter.createTime = { lte: new Date(new Date(endDate).setHours(23, 59, 59, 999)) };
+        timeFilter.createDate = { lte: new Date(new Date(endDate).setHours(23, 59, 59, 999)) };
       }
 
       const latestPerLink = await prisma.video.groupBy({
@@ -412,14 +412,14 @@ class DatasetController {
 
       let timeFilter = {};
       if (onlyPostsNewerThan && onlyPostsOlderThan) {
-        timeFilter.createTime = {
+        timeFilter.createDate = {
           gte: new Date(onlyPostsNewerThan),
           lte: new Date(new Date(onlyPostsOlderThan).setHours(23, 59, 59, 999)),
         };
       } else if (onlyPostsNewerThan) {
-        timeFilter.createTime = { gte: new Date(onlyPostsNewerThan) };
+        timeFilter.createDate = { gte: new Date(onlyPostsNewerThan) };
       } else if (onlyPostsOlderThan) {
-        timeFilter.createTime = { lte: new Date(new Date(onlyPostsOlderThan).setHours(23, 59, 59, 999)) };
+        timeFilter.createDate = { lte: new Date(new Date(onlyPostsOlderThan).setHours(23, 59, 59, 999)) };
       }
 
       const latestPerLink = await prisma.video.groupBy({
