@@ -365,6 +365,10 @@ class DatasetController {
           ...(datasetId && { datasetId: String(datasetId) }),
           ...(author && { author: String(author) }),
           ...timeFilter,
+          webVideoUrl: {
+            contains: "tiktok",
+            mode: "insensitive",
+          }
         },
       });
 
@@ -428,6 +432,10 @@ class DatasetController {
           ...(datasetId && { datasetId: String(datasetId) }),
           ...(author && { author: String(author) }),
           ...timeFilter,
+          webVideoUrl: {
+          contains: "instagram",
+          mode: "insensitive", 
+        },
         },
       });
 
