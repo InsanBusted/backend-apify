@@ -2,6 +2,7 @@ import { Router } from "express";
 import TiktokController from "../controllers/TiktokController.js";
 import DatasetController from "../controllers/DatasetController.js";
 import InstagramController from "../controllers/InstagramController.js";
+import DatasetShopeeController from "../controllers/DatasetShopeeController.js";
 
 const router = Router();
 
@@ -216,7 +217,10 @@ router.get("/tiktok/konten/bankData", DatasetController.getAllDataBankData);
  *         description: Semua konten Instagram berhasil diambil
  */
 router.get("/instagram/konten", DatasetController.getAllDataInstagram);
-router.get("/instagram/konten/bankData", DatasetController.getAllDataInstagramBankData);
+router.get(
+  "/instagram/konten/bankData",
+  DatasetController.getAllDataInstagramBankData
+);
 
 /**
  * @swagger
@@ -255,9 +259,14 @@ router.post("/instagram/run-reference", InstagramController.reference);
  *         description: Data Instagram berhasil diambil
  */
 router.get("/instagram/:datasetId", InstagramController.getData);
-router.get("/instagram/detail/:datasetId", InstagramController.getDataDetailAnalisis);
-router.get("/instagram/detail/bankdata/:datasetId", InstagramController.getDataDetailInstagram);
-
+router.get(
+  "/instagram/detail/:datasetId",
+  InstagramController.getDataDetailAnalisis
+);
+router.get(
+  "/instagram/detail/bankdata/:datasetId",
+  InstagramController.getDataDetailInstagram
+);
 
 /**
  * @swagger
@@ -276,7 +285,17 @@ router.get("/instagram/detail/bankdata/:datasetId", InstagramController.getDataD
  *         description: Detail data TikTok berhasil diambil
  */
 router.get("/tiktok/:datasetId", DatasetController.getDetailData);
-router.get("/tiktok/detail/:datasetId", DatasetController.getDetailDataAnalisis);
-router.get("/tiktok/referensi/:datasetId", DatasetController.getDetailDataReferensi);
+router.get(
+  "/tiktok/detail/:datasetId",
+  DatasetController.getDetailDataAnalisis
+);
+router.get(
+  "/tiktok/referensi/:datasetId",
+  DatasetController.getDetailDataReferensi
+);
+
+// SHOPEE
+
+router.get("/shopee/get_affiliate", DatasetShopeeController.getAffiliate);
 
 export default router;

@@ -91,8 +91,6 @@ class DatasetController {
     }
   }
 
-
-
   static async getDetailData(req, res) {
     try {
       const { datasetId } = req.params;
@@ -166,6 +164,7 @@ class DatasetController {
       });
     }
   }
+  
   static async getDetailDataAnalisis(req, res) {
     try {
       const { datasetId } = req.params;
