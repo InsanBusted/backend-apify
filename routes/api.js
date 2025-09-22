@@ -294,8 +294,10 @@ router.get(
   DatasetController.getDetailDataReferensi
 );
 
-// SHOPEE
 
+// SHOPEE
 router.get("/shopee/get_affiliate", DatasetShopeeController.getAffiliate);
+router.post("/shopee/detail_affiliate", DatasetShopeeController.getDetailAffiliate);
+router.get("/shopee/category_affiliate", DatasetShopeeController.getCategoryAffiliate);
 
 export default router;
