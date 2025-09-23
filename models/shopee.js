@@ -47,7 +47,7 @@ class Shopee {
     }
   }
 
-  static async getShopeeDetailAffiliate(userAgent, sort, affiliateId) {
+  static async getShopeeDetailAffiliate(userAgent,affiliateId ,sort) {
     try {
       const url =
         "https://seller.shopee.co.id/api/v3/affiliateplatform/creator/detail";

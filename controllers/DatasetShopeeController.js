@@ -21,8 +21,8 @@ class DatasetShopeeController {
 
   static async getDetailAffiliate(req, res) {
     try {
-      const sort = req.body.sort || 30;
-      const affiliateId = req.body.affiliate_id;
+      const affiliateId = req.query.affiliate_id;
+      const sort = req.query.sort || 30;
 
       if (!affiliateId) {
         return res.status(400).json({
@@ -31,7 +31,7 @@ class DatasetShopeeController {
         });
       }
 
-      const data = await Shopee.getShopeeDetailAffiliate(req.shopeeUserAgent, sort, affiliateId);
+      const data = await Shopee.getShopeeDetailAffiliate(req.shopeeUserAgent,affiliateId,sort);
       res.status(200).json({
         success: true,
         message: "Data affiliate berhasil diambil",
