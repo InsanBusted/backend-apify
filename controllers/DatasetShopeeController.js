@@ -4,7 +4,7 @@ class DatasetShopeeController {
   static async getAffiliate(req, res) {
     try {
       const categoryId = parseInt(req.query.category_id) || 100635;
-      const maxItems = parseInt(req.query.max_items) || 50;
+      const maxItems = parseInt(req.query.max_items);
       const data = await Shopee.getShopeeAffiliate(req.shopeeUserAgent, categoryId, maxItems);
       res.status(200).json({
         success: true,

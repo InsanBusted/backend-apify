@@ -1,12 +1,10 @@
 import { callShopeeAPI, callShopeeGetAPI } from "../helper/shopeeClient.js";
 
 class Shopee {
-  static async getShopeeAffiliate(userAgent,categoryId = 100635, maxItems = 50) {
+  static async getShopeeAffiliate(userAgent,categoryId = 100635, maxItems, offset = 0) {
     try {
       const url = "https://seller.shopee.co.id/api/v3/affiliateplatform/creator/list";
-
-      let offset = 0;
-      const limit = 12;
+      const limit = 20;
       let allCreators = [];
 
       while (allCreators.length < maxItems) {
