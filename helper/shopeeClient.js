@@ -7,7 +7,7 @@ export async function callShopeeAPI(url, body = {}, userAgent = null) {
         "user-agent": userAgent ||
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
         cookie: SHOPEE_COOKIE,
-    };
+    };  
 
     const res = await fetch(url, {
         method: "POST",
@@ -22,6 +22,7 @@ export async function callShopeeAPI(url, body = {}, userAgent = null) {
 
     return res.json();
 }
+
 export async function callShopeeGetAPI(url, userAgent = null) {
     const headers = {
         accept: "application/json, text/plain, */*",

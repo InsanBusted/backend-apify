@@ -1,7 +1,7 @@
 import { callShopeeAPI, callShopeeGetAPI } from "../helper/shopeeClient.js";
 
 class Shopee {
-  static async getShopeeAffiliate(userAgent,categoryId = 100635, maxItems, offset = 0) {
+  static async getShopeeAffiliate(userAgent, categoryId = 100635, maxItems, offset = 0) {
     try {
       const url = "https://seller.shopee.co.id/api/v3/affiliateplatform/creator/list";
       const limit = 20;
@@ -45,13 +45,14 @@ class Shopee {
     }
   }
 
-  static async getShopeeDetailAffiliate(userAgent,affiliateId ,sort) {
+  static async getShopeeDetailAffiliate(userAgent, affiliateId, sort) {
     try {
       const url =
         "https://seller.shopee.co.id/api/v3/affiliateplatform/creator/detail";
+
       const body = {
-        affiliate_id: affiliateId,
-        data_period: sort
+        affiliate_id: affiliateId,  
+        data_period: sort           
       };
 
       const data = await callShopeeAPI(url, body, userAgent);
@@ -66,7 +67,7 @@ class Shopee {
     try {
       const url =
         "https://seller.shopee.co.id/api/v3/affiliateplatform/commissions/category_setting";
-     
+
 
       const data = await callShopeeGetAPI(url, userAgent);
       return data;
