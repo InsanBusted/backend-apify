@@ -297,7 +297,8 @@ router.get(
 
 // SHOPEE
 router.get("/shopee/get_affiliate", DatasetShopeeController.getAffiliate);
-router.get("/shopee/detail_affiliate", DatasetShopeeController.getDetailAffiliate);
+router.post("/shopee/detail_affiliate", DatasetShopeeController.getDetailAffiliate);
 router.get("/shopee/category_affiliate", DatasetShopeeController.getCategoryAffiliate);
+router.get("/shopee/list_affiliate", DatasetShopeeController.getListDetailAffiliate);
 
 export default router;
