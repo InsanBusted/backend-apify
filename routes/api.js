@@ -3,6 +3,9 @@ import TiktokController from "../controllers/TiktokController.js";
 import DatasetController from "../controllers/DatasetController.js";
 import InstagramController from "../controllers/InstagramController.js";
 import DatasetShopeeController from "../controllers/DatasetShopeeController.js";
+import DatasetPostingController from "../controllers/DatasetPostingController.js";
+import upload  from "../middleware/upload.js";
+
 
 const router = Router();
 
@@ -295,7 +298,14 @@ router.get(
 );
 
 // SHOPEE
-
 router.get("/shopee/get_affiliate", DatasetShopeeController.getAffiliate);
+
+
+// Upload posting
+router.post("/post/instagram", DatasetPostingController.upload);
+
+// Ambil semua posting
+router.get("/posts", DatasetPostingController.getAll);  
+
 
 export default router;
