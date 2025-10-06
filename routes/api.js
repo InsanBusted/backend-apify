@@ -206,6 +206,7 @@ router.post("/instagram/run-detail", InstagramController.getDetailKonten);
  */
 router.get("/tiktok/konten", DatasetController.getAllData);
 router.get("/tiktok/konten/bankData", DatasetController.getAllDataBankData);
+router.get("/tiktok/konten/bank-konten/list-akun", TiktokController.getAllAkunBankKonten);
 
 /**
  * @swagger

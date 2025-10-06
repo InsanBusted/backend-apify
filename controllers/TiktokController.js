@@ -1,3 +1,4 @@
+import prisma from "../lib/db/prisma.js";
 import GetData from "../models/getData.js";
 import Tiktok from "../models/tiktok.js";
 
@@ -18,7 +19,7 @@ class TiktokController {
           message: "input must be a non-empty string or array",
         });
       }
-      const data = await Tiktok.fetchData({input, startDate, endDate});
+      const data = await Tiktok.fetchData({ input, startDate, endDate });
       res.status(200).json({ success: true, data });
     } catch (error) {
       res.status(500).json({
@@ -84,6 +85,35 @@ class TiktokController {
       });
     }
   }
+
+  static async getAllAkunBankKonten(req, res) {
+    try {
+      const videos = await prisma.video.findMany({
+        where: {
+          source: 'bank-konten',
+        },
+        select: {
+          author: true,
+          createDate: true,
+        },
+        orderBy: {
+          createDate: 'desc', // tampilkan yang terbaru dulu
+        },
+        distinct: ['author'], // hanya satu data per akun
+      });
+
+      const data = videos.map((v) => ({
+        author: v.author,
+        createDate: v.createDate.toISOString(),
+      }));
+
+      res.status(200).json({ success: true, data });
+    } catch (error) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  }
+
+
 }
 
 export default TiktokController;
