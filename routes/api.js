@@ -5,6 +5,7 @@ import InstagramController from "../controllers/InstagramController.js";
 import DatasetShopeeController from "../controllers/DatasetShopeeController.js";
 import DatasetPostingController from "../controllers/DatasetPostingController.js";
 import upload  from "../middleware/upload.js";
+import JamController from "../controllers/jamController.js";
 
 
 const router = Router();
@@ -303,6 +304,16 @@ router.get("/shopee/get_affiliate", DatasetShopeeController.getAffiliate);
 
 // Upload posting
 router.post("/post/instagram", DatasetPostingController.upload);
+router.put("/post/instagram/:id", upload.single("file"), DatasetPostingController.edit);
+router.delete("/post/instagram/delete/:id", DatasetPostingController.delete);
+
+
+// Jam Posting
+router.post("/jam", JamController.create);
+router.get("/jam", JamController.getAll);
+router.delete("/jam/:id", JamController.delete);
+
+
 
 // Ambil semua posting
 router.get("/posts", DatasetPostingController.getAll);  

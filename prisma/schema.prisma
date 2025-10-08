@@ -29,8 +29,8 @@ model Video {
 
   @@index([datasetId])
   @@index([createTime])
-  @@map("videos")
   @@index([createDate])
+  @@map("videos")
 }
 
 model Hashtag {
@@ -61,28 +61,45 @@ model VideoHashtag {
   @@map("video_hashtags")
 }
 
-enum Waktu {
-  P // pagi
-  S // siang
-  M // malam
+enum TypePost {
+  feed
+  reels
+}
+
+model Jam {
+  id        String   @id @default(uuid()) @db.Uuid
+  jam       String[] @db.Text
+  datePost  DateTime @map("date_post")  
+
+  posts     Post[]
+
+  @@map("jam")
 }
 
 model Post {
-  id         String   @id @default(uuid()) @db.Uuid
-  medsos     String
-  akun       String
-  idakun     String
-  idtoken    String
-  caption    String?
-  linkfile   String?
-  extention  String?
-  jamPost    DateTime? @map("jam_post")
-  cby        Int
-  mby        Int?
-  cdate      DateTime @default(now())
-  mdate      DateTime @updatedAt
-  isdelete   Boolean  @default(false)
-  waktu      Waktu
+  id        String    @id @default(uuid()) @db.Uuid
+  medsos    String
+  akun      String
+  idakun    String
+  idtoken   String
+  caption   String
+  linkfile  String
+  extention String
+  datePost  DateTime  @map("date_post")
+  jamPost   DateTime? @map("jam_post")
+  cby       Int
+  mby       Int?
+  cdate     DateTime  @default(now())
+  mdate     DateTime  @updatedAt
+  isdelete  Boolean   @default(false)
+  urutan    String
+  typePost  TypePost
+
+  // Relasi opsional ke Jam
+  jamId     String?   @db.Uuid
+  jam       Jam?      @relation(fields: [jamId], references: [id])
 
   @@map("posts")
 }
+
+
