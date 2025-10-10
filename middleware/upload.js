@@ -13,6 +13,23 @@ const upload = multer({
       cb(null, uniqueKey);
     },
   }),
+  fileFilter: (req, file, cb) => {
+    const allowedMime = [
+      "image/jpeg",
+      "image/png",
+      "image/jpg",
+      "video/mp4",
+      "video/quicktime",
+    ];
+    if (!allowedMime.includes(file.mimetype)) {
+      return cb(new Error("Format file tidak didukung"), false);
+    }
+    cb(null, true);
+  },
+  limits: {
+    fileSize: 100 * 1024 * 1024, 
+  },
 });
+
 
 export default upload;

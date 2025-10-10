@@ -7,18 +7,41 @@ import { URL } from "url";
 const prisma = new PrismaClient();
 
 class Posting {
-    static async uploadBankKonten({ body, file }) {
+    // CREATE
+    static async uploadBankKonten({ body }) {
         try {
-            let { medsos, akun, idakun, idtoken, caption, jamPost, cby, mby, linkfile, extention, datePost, urutan, typePost } = body;
-
-            if (file) {
-                linkfile = `${PUBLIC_URL}/${file.key}`;
-            }
+            const {
+                medsos,
+                akun,
+                idakun,
+                idtoken,
+                caption,
+                jamPost,
+                cby,
+                mby,
+                datePost,
+                urutan,
+                typePost,
+                medias,
+            } = body;
 
             const datePostValue = new Date(datePost);
             const jamPostValue = jamPost ? new Date(jamPost) : null;
 
-            const posting = await prisma.post.create({
+            // Parse medias jika stringified JSON
+            let mediaList = [];
+            if (typeof medias === "string") {
+                try {
+                    mediaList = JSON.parse(medias);
+                } catch {
+                    mediaList = [];
+                }
+            } else if (Array.isArray(medias)) {
+                mediaList = medias;
+            }
+
+            // 🔹 Buat record utama Post
+            const post = await prisma.post.create({
                 data: {
                     medsos,
                     akun,
@@ -31,42 +54,56 @@ class Posting {
                     jamPost: jamPostValue,
                     cby: parseInt(cby),
                     mby: parseInt(mby),
-                    linkfile,
-                    extention,
                 },
             });
 
-            return posting;
+            // 🔹 Simpan semua file ke PostMedia
+            if (mediaList.length > 0) {
+                const mediaArray = mediaList.map((m) => ({
+                    postId: post.id,
+                    imageUrl: m.imageUrl,
+                    extention: m.extention,
+                    urutan: m.urutan,
+                }));
+
+                await prisma.postMedia.createMany({ data: mediaArray });
+            }
+
+            return { success: true, data: post };
         } catch (error) {
             throw new Error(error.message);
         }
     }
 
-    static async updateBankKonten({ id, body, file }) {
+    // UPDATE
+    static async updateBankKonten({ id, body }) {
         try {
-            let { medsos, akun, idakun, idtoken, caption, jamPost, mby, linkfile, extention, datePost, urutan, typePost } = body;
+            const {
+                medsos,
+                akun,
+                idakun,
+                idtoken,
+                caption,
+                jamPost,
+                cby,
+                mby,
+                datePost,
+                urutan,
+                typePost,
+                medias, // semua file dari frontend
+            } = body;
 
             const existingPost = await prisma.post.findUnique({
                 where: { id },
+                include: { medias: true }, // ✅ sesuai schema
             });
 
-            if (!existingPost) {
-                throw new Error("Posting tidak ditemukan");
-            }
-
-            // Jika ada file baru, update linkfile & extention
-            if (file) {
-                linkfile = `${PUBLIC_URL}/${file.key}`;
-                extention = file.originalname.split(".").pop();
-            } else {
-                // Kalau tidak ada file baru, tetap pakai yang lama
-                linkfile = existingPost.linkfile;
-                extention = existingPost.extention;
-            }
+            if (!existingPost) throw new Error("Posting tidak ditemukan");
 
             const datePostValue = datePost ? new Date(datePost) : existingPost.datePost;
             const jamPostValue = jamPost ? new Date(jamPost) : existingPost.jamPost;
 
+            // Update data utama Post
             const updatedPost = await prisma.post.update({
                 where: { id },
                 data: {
@@ -79,22 +116,41 @@ class Posting {
                     typePost: typePost ?? existingPost.typePost,
                     datePost: datePostValue,
                     jamPost: jamPostValue,
+                    cby: cby ? parseInt(cby) : existingPost.cby,
                     mby: mby ? parseInt(mby) : existingPost.mby,
-                    linkfile,
-                    extention,
                 },
             });
 
-            return updatedPost;
+            // Update PostMedia
+            if (Array.isArray(medias)) {
+                // Hapus media lama
+                await prisma.postMedia.deleteMany({ where: { postId: id } });
+
+                const mediaArray = medias.map((m) => ({
+                    postId: id,
+                    imageUrl: m.imageUrl,
+                    extention: m.extention,
+                    urutan: m.urutan,
+                }));
+
+                if (mediaArray.length > 0) {
+                    await prisma.postMedia.createMany({ data: mediaArray });
+                }
+            }
+
+            return { success: true, data: updatedPost };
         } catch (error) {
             throw new Error(error.message);
         }
     }
 
-    static async deleteBankKonten({id}) {
+
+
+
+    static async deleteBankKonten({ id }) {
         try {
             const post = await prisma.post.findUnique({
-                where: {id},
+                where: { id },
             })
 
             if (!post) {
@@ -102,7 +158,7 @@ class Posting {
             }
 
             const deletedPost = await prisma.post.update({
-                where: {id},
+                where: { id },
                 data: {
                     isdelete: true
                 }
@@ -111,7 +167,7 @@ class Posting {
             return deletedPost
 
         } catch (error) {
-             throw new Error(error.message);
+            throw new Error(error.message);
         }
     }
 

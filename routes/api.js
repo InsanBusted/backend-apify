@@ -303,8 +303,8 @@ router.get("/shopee/get_affiliate", DatasetShopeeController.getAffiliate);
 
 
 // Upload posting
-router.post("/post/instagram", DatasetPostingController.upload);
-router.put("/post/instagram/:id", upload.single("file"), DatasetPostingController.edit);
+router.post("/post/instagram",  DatasetPostingController.upload);
+router.put("/post/instagram/:id", upload.array("files"), DatasetPostingController.edit);
 router.delete("/post/instagram/delete/:id", DatasetPostingController.delete);
 
 
