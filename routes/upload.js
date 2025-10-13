@@ -18,7 +18,12 @@ router.post("/", upload.array("files"), async (req, res) => {
     // Upload semua file ke bucket
     const uploadedFiles = await Promise.all(
       req.files.map(async (file) => {
-        const filename = `${Date.now()}-${file.originalname}`;
+        const safeName = file.originalname
+          .replace(/\s+/g, "-")        
+          .replace(/[()]/g, "")         
+          .replace(/[^a-zA-Z0-9._-]/g, ""); 
+
+        const filename = `${Date.now()}-${safeName}`;
 
         await s3.send(
           new PutObjectCommand({
