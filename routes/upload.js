@@ -4,28 +4,48 @@ import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3, BUCKET, PUBLIC_URL } from "../lib/minio.js";
 
 const router = express.Router();
-const upload = multer({ storage: multer.memoryStorage() }); 
 
-router.post("/", upload.single("file"), async (req, res) => {
+// Gunakan memory storage, nanti langsung dikirim ke S3
+const upload = multer({ storage: multer.memoryStorage() });
+
+// 📦 Upload multiple files
+router.post("/", upload.array("files"), async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ success: false, message: "No file uploaded" });
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ success: false, message: "No files uploaded" });
     }
 
-    const filename = `${Date.now()}-${req.file.originalname}`;
+    // Upload semua file ke bucket
+    const uploadedFiles = await Promise.all(
+      req.files.map(async (file) => {
+        const safeName = file.originalname
+          .replace(/\s+/g, "-")        
+          .replace(/[()]/g, "")         
+          .replace(/[^a-zA-Z0-9._-]/g, ""); 
 
-    await s3.send(
-      new PutObjectCommand({
-        Bucket: BUCKET,
-        Key: filename,
-        Body: req.file.buffer,
-        ContentType: req.file.mimetype,
+        const filename = `${Date.now()}-${safeName}`;
+
+        await s3.send(
+          new PutObjectCommand({
+            Bucket: BUCKET,
+            Key: filename,
+            Body: file.buffer,
+            ContentType: file.mimetype,
+          })
+        );
+
+        // Kembalikan URL publik
+        return {
+          originalname: file.originalname,
+          filename,
+          url: `${PUBLIC_URL}/${filename}`,
+          mimetype: file.mimetype,
+          size: file.size,
+        };
       })
     );
 
-    const linkurl = `${PUBLIC_URL}/${filename}`; 
-
-    return res.json({ success: true, linkurl });
+    return res.json({ success: true, files: uploadedFiles });
   } catch (err) {
     console.error("Upload error:", err);
     res.status(500).json({ success: false, message: err.message });

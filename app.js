@@ -5,7 +5,6 @@ import dotenv from "dotenv";
 import tiktokRoutes from "./routes/api.js";
 import uploadRoutes from "./routes/upload.js";
 import cors from "cors";
-import tiktokRoutes from "./routes/api.js";
 import { injectUserAgent } from "./middlewares/userAgent.js";
 dotenv.config();
 const app = express();

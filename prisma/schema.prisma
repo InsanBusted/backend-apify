@@ -64,12 +64,13 @@ model VideoHashtag {
 enum TypePost {
   feed
   reels
+  carousel
 }
 
 model Jam {
   id        String   @id @default(uuid()) @db.Uuid
   jam       String[] @db.Text
-  datePost  DateTime @map("date_post")  
+  datePost  DateTime @map("date_post")
 
   posts     Post[]
 
@@ -77,29 +78,51 @@ model Jam {
 }
 
 model Post {
-  id        String    @id @default(uuid()) @db.Uuid
-  medsos    String
-  akun      String
-  idakun    String
-  idtoken   String
-  caption   String
-  linkfile  String
-  extention String
-  datePost  DateTime  @map("date_post")
-  jamPost   DateTime? @map("jam_post")
-  cby       Int
-  mby       Int?
-  cdate     DateTime  @default(now())
-  mdate     DateTime  @updatedAt
-  isdelete  Boolean   @default(false)
-  urutan    String
-  typePost  TypePost
+  id          String     @id @default(uuid()) @db.Uuid
+  medsos      String
+  akun        String
+  idakun      String
+  idtoken     String
+  caption     String
+  datePost    DateTime   @map("date_post")
+  jamPost     DateTime?  @map("jam_post")
+  cby         Int
+  mby         Int?
+  cdate       DateTime   @default(now())
+  mdate       DateTime   @updatedAt
+  isdelete    Boolean    @default(false)
+  urutan      String
+  typePost    TypePost
+
+  // Tambahan opsional untuk kontrol proses upload & publish
+  publishedId String?    // ID posting hasil publish ke Meta API
+  status      String?    // draft | uploaded | published | failed
 
   // Relasi opsional ke Jam
-  jamId     String?   @db.Uuid
-  jam       Jam?      @relation(fields: [jamId], references: [id])
+  jamId       String?    @db.Uuid
+  jam         Jam?       @relation(fields: [jamId], references: [id])
+
+  // Relasi ke tabel media (carousel)
+  medias      PostMedia[]
 
   @@map("posts")
+  @@index([datePost])
+  @@index([medsos])
 }
 
+model PostMedia {
+  id          String   @id @default(uuid()) @db.Uuid
+  postId      String   @db.Uuid
+  imageUrl    String
+  extention   String
+  creationId  String?  // hasil upload ke Meta API
+  urutan      Int      // urutan dalam carousel
+  cdate       DateTime @default(now())
+
+  post        Post     @relation(fields: [postId], references: [id])
+
+  @@map("post_medias")
+  @@index([postId])
+  @@index([urutan])
+}
 

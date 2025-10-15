@@ -307,8 +307,8 @@ router.get("/shopee/category_affiliate", DatasetShopeeController.getCategoryAffi
 
 
 // Upload posting
-router.post("/post/instagram", DatasetPostingController.upload);
-router.put("/post/instagram/:id", upload.single("file"), DatasetPostingController.edit);
+router.post("/post/instagram",  DatasetPostingController.upload);
+router.put("/post/instagram/:id", upload.array("files"), DatasetPostingController.edit);
 router.delete("/post/instagram/delete/:id", DatasetPostingController.delete);
 
 
@@ -321,6 +321,7 @@ router.delete("/jam/:id", JamController.delete);
 
 // Ambil semua posting
 router.get("/posts", DatasetPostingController.getAll);  
+router.get("/posts/:id", DatasetPostingController.getById);  
 
 
 export default router;
