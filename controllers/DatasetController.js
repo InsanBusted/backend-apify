@@ -365,7 +365,7 @@ class DatasetController {
           ...(author && { author: String(author) }),
           ...timeFilter,
           webVideoUrl: {
-            contains: "tiktok",
+            contains: "instagram",
             mode: "insensitive",
           }
         },

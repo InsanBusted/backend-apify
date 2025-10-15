@@ -299,10 +299,7 @@ router.get(
   DatasetController.getDetailDataReferensi
 );
 
-<<<<<<< HEAD
 
-=======
->>>>>>> bfda211f95284fad36bcd7e1b23316bbb4442050
 // SHOPEE
 router.get("/shopee/get_affiliate", DatasetShopeeController.getAffiliate);
 router.get("/shopee/detail_affiliate", DatasetShopeeController.getDetailAffiliate);

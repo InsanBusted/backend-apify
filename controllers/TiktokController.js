@@ -90,16 +90,16 @@ class TiktokController {
     try {
       const videos = await prisma.video.findMany({
         where: {
-          source: 'bank-konten',
+          source: 'bank-data',
         },
         select: {
           author: true,
           createDate: true,
         },
         orderBy: {
-          createDate: 'desc', // tampilkan yang terbaru dulu
+          createDate: 'desc',
         },
-        distinct: ['author'], // hanya satu data per akun
+        distinct: ['author'], 
       });
 
       const data = videos.map((v) => ({
