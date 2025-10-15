@@ -119,7 +119,7 @@ class DatasetController {
             shareCount: item.shareCount,
             collectCount: item.collectCount,
             commentCount: item.commentCount,
-            source: 'bank-konten'
+            source: 'bank-data'
           };
 
           const video = await prisma.video.create({
@@ -343,7 +343,7 @@ class DatasetController {
 
   static async getAllDataBankData(req, res) {
     try {
-      const { datasetId, author, startDate, endDate } = req.query;
+      const { datasetId, author, platform, startDate, endDate } = req.query;
 
       let timeFilter = {};
       if (startDate && endDate) {
@@ -365,7 +365,7 @@ class DatasetController {
           ...(author && { author: String(author) }),
           ...timeFilter,
           webVideoUrl: {
-            contains: "instagram",
+            contains: platform,
             mode: "insensitive",
           }
         },

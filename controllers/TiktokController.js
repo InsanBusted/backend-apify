@@ -88,9 +88,23 @@ class TiktokController {
 
   static async getAllAkunBankKonten(req, res) {
     try {
+      const { platform } = req.query;
+
+      // 🔹 Buat filter platform dinamis
+      const platformFilter = platform
+        ? {
+          webVideoUrl: {
+            contains: platform, 
+            mode: "insensitive",
+          },
+        }
+        : {};
+
+      // 🔹 Ambil data author unik
       const videos = await prisma.video.findMany({
         where: {
           source: 'bank-data',
+          ...platformFilter,
         },
         select: {
           author: true,
@@ -109,9 +123,11 @@ class TiktokController {
 
       res.status(200).json({ success: true, data });
     } catch (error) {
+      console.error('❌ getAllAkunBankKonten error:', error);
       res.status(500).json({ success: false, error: error.message });
     }
   }
+
 
 
 }

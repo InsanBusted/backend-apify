@@ -114,6 +114,7 @@ model PostMedia {
   id          String   @id @default(uuid()) @db.Uuid
   postId      String   @db.Uuid
   imageUrl    String
+  coverUrl    String? 
   extention   String
   creationId  String?  // hasil upload ke Meta API
   urutan      Int      // urutan dalam carousel
@@ -125,4 +126,3 @@ model PostMedia {
   @@index([postId])
   @@index([urutan])
 }
-

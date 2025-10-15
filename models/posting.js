@@ -62,6 +62,7 @@ class Posting {
                 const mediaArray = mediaList.map((m) => ({
                     postId: post.id,
                     imageUrl: m.imageUrl,
+                    coverUrl: m.coverUrl,
                     extention: m.extention,
                     urutan: m.urutan,
                 }));
@@ -129,6 +130,7 @@ class Posting {
                 const mediaArray = medias.map((m) => ({
                     postId: id,
                     imageUrl: m.imageUrl,
+                    coverUrl: m.coverUrl,
                     extention: m.extention,
                     urutan: m.urutan,
                 }));
