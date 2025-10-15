@@ -49,15 +49,38 @@ class DatasetPostingController {
                 where: { isdelete: false },
                 orderBy: { cdate: "desc" },
                 include: {
-                    medias: true, // tambahkan ini agar media ikut diambil
+                    medias: true,
+                    jam: true
                 },
             });
 
-            return res.json({ success: true, data: posts });
+            const processedPosts = posts.map(post => {
+                let jamTerpilih = null;
+
+                // Jika post.jam adalah objek dan post.jam.jam adalah array
+                const jadwalArray = post.jam && Array.isArray(post.jam.jam) ? post.jam.jam : null;
+
+                if (jadwalArray && post.urutan != null) {
+                    const index = Number(post.urutan) - 1;
+                    // pastikan index valid
+                    if (!Number.isNaN(index) && index >= 0 && index < jadwalArray.length) {
+                        jamTerpilih = jadwalArray[index];
+                    }
+                }
+
+                return {
+                    ...post,
+                    jamTerpilih, // bisa null kalau tidak ada
+                };
+            });
+
+            return res.json({ success: true, data: processedPosts });
         } catch (error) {
             return res.status(500).json({ success: false, message: error.message });
         }
     }
+
+
 
     static async getById(req, res) {
         try {
