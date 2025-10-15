@@ -3,6 +3,10 @@ import TiktokController from "../controllers/TiktokController.js";
 import DatasetController from "../controllers/DatasetController.js";
 import InstagramController from "../controllers/InstagramController.js";
 import DatasetShopeeController from "../controllers/DatasetShopeeController.js";
+import DatasetPostingController from "../controllers/DatasetPostingController.js";
+import upload  from "../middleware/upload.js";
+import JamController from "../controllers/jamController.js";
+
 
 const router = Router();
 
@@ -295,10 +299,31 @@ router.get(
   DatasetController.getDetailDataReferensi
 );
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> bfda211f95284fad36bcd7e1b23316bbb4442050
 // SHOPEE
 router.get("/shopee/get_affiliate", DatasetShopeeController.getAffiliate);
 router.get("/shopee/detail_affiliate", DatasetShopeeController.getDetailAffiliate);
 router.get("/shopee/category_affiliate", DatasetShopeeController.getCategoryAffiliate);
+
+
+// Upload posting
+router.post("/post/instagram", DatasetPostingController.upload);
+router.put("/post/instagram/:id", upload.single("file"), DatasetPostingController.edit);
+router.delete("/post/instagram/delete/:id", DatasetPostingController.delete);
+
+
+// Jam Posting
+router.post("/jam", JamController.create);
+router.get("/jam", JamController.getAll);
+router.delete("/jam/:id", JamController.delete);
+
+
+
+// Ambil semua posting
+router.get("/posts", DatasetPostingController.getAll);  
+
 
 export default router;

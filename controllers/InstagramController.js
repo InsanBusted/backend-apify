@@ -10,7 +10,7 @@ class InstagramController {
 
       // pastikan search jadi array of string
       if (typeof search === "string") {
-        search = search.split(/\s+/); // <-- fix disini
+        search = search.split(/\s+/); 
       } else if (!Array.isArray(search)) {
         return res.status(400).json({
           success: false,
@@ -78,7 +78,7 @@ class InstagramController {
 
           if (item.hashtags?.length) {
             const hashtags = item.hashtags
-              .map((tag) => tag.name?.trim())
+              .map((tag) => (typeof tag === "string" ? tag.trim() : tag.name?.trim()))
               .filter(Boolean);
 
             if (hashtags.length > 0) {
@@ -100,6 +100,7 @@ class InstagramController {
               });
             }
           }
+
         })
       );
 
@@ -149,7 +150,7 @@ class InstagramController {
 
           if (item.hashtags?.length) {
             const hashtags = item.hashtags
-              .map((tag) => tag.name?.trim())
+              .map((tag) => (typeof tag === "string" ? tag.trim() : tag.name?.trim()))
               .filter(Boolean);
 
             if (hashtags.length > 0) {
@@ -171,6 +172,7 @@ class InstagramController {
               });
             }
           }
+          
         })
       );
 
@@ -235,7 +237,7 @@ class InstagramController {
 
           if (item.hashtags?.length) {
             const hashtags = item.hashtags
-              .map((tag) => tag.name?.trim())
+              .map((tag) => (typeof tag === "string" ? tag.trim() : tag.name?.trim()))
               .filter(Boolean);
 
             if (hashtags.length > 0) {
@@ -257,6 +259,7 @@ class InstagramController {
               });
             }
           }
+
         })
       );
 

@@ -2,6 +2,9 @@ import https from "https";
 import fs from "fs";
 import express from "express";
 import dotenv from "dotenv";
+import tiktokRoutes from "./routes/api.js";
+import uploadRoutes from "./routes/upload.js";
+a211f95284fad36bcd7e1b23316bbb4442050
 import cors from "cors";
 import tiktokRoutes from "./routes/api.js";
 import { injectUserAgent } from "./middlewares/userAgent.js";
@@ -12,6 +15,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api", tiktokRoutes);
+app.use("/api/upload", uploadRoutes);
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
