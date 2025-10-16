@@ -6,7 +6,10 @@ import { URL } from "url";
 
 const prisma = new PrismaClient();
 
+
 class Posting {
+    
+
     // CREATE
     static async uploadBankKonten({ body }) {
         try {
