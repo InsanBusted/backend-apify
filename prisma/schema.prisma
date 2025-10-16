@@ -86,6 +86,7 @@ model Post {
   caption     String
   datePost    DateTime   @map("date_post")
   jamPost     DateTime?  @map("jam_post")
+  jamToPost   DateTime?  @map("jam_to_post")
   cby         Int
   mby         Int?
   cdate       DateTime   @default(now())
