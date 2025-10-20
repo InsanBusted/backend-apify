@@ -3,10 +3,19 @@ import { PUBLIC_URL } from "../lib/minio.js";
 import path from "path";
 import { URL } from "url";
 
-
 const prisma = new PrismaClient();
 
 class Posting {
+
+    // 🔹 Helper untuk replace domain URL
+    static replaceDomain(url) {
+        if (!url) return url;
+        return url.replace(
+            /^http:\/\/178\.248\.73\.198:9902/,
+            'https://s3.berlstore.com'
+        );
+    }
+
     // CREATE
     static async uploadBankKonten({ body }) {
         try {
@@ -57,12 +66,12 @@ class Posting {
                 },
             });
 
-            // 🔹 Simpan semua file ke PostMedia
+            // 🔹 Simpan semua file ke PostMedia dengan domain replace
             if (mediaList.length > 0) {
                 const mediaArray = mediaList.map((m) => ({
                     postId: post.id,
-                    imageUrl: m.imageUrl,
-                    coverUrl: m.coverUrl,
+                    imageUrl: Posting.replaceDomain(m.imageUrl),
+                    coverUrl: Posting.replaceDomain(m.coverUrl),
                     extention: m.extention,
                     urutan: m.urutan,
                 }));
@@ -91,12 +100,12 @@ class Posting {
                 datePost,
                 urutan,
                 typePost,
-                medias, // semua file dari frontend
+                medias,
             } = body;
 
             const existingPost = await prisma.post.findUnique({
                 where: { id },
-                include: { medias: true }, // ✅ sesuai schema
+                include: { medias: true },
             });
 
             if (!existingPost) throw new Error("Posting tidak ditemukan");
@@ -129,8 +138,8 @@ class Posting {
 
                 const mediaArray = medias.map((m) => ({
                     postId: id,
-                    imageUrl: m.imageUrl,
-                    coverUrl: m.coverUrl,
+                    imageUrl: Posting.replaceDomain(m.imageUrl),
+                    coverUrl: Posting.replaceDomain(m.coverUrl),
                     extention: m.extention,
                     urutan: m.urutan,
                 }));
@@ -146,33 +155,22 @@ class Posting {
         }
     }
 
-
-
-
+    // DELETE
     static async deleteBankKonten({ id }) {
         try {
-            const post = await prisma.post.findUnique({
-                where: { id },
-            })
-
-            if (!post) {
-                throw new Error("Posting tidak ditemukan");
-            }
+            const post = await prisma.post.findUnique({ where: { id } });
+            if (!post) throw new Error("Posting tidak ditemukan");
 
             const deletedPost = await prisma.post.update({
                 where: { id },
-                data: {
-                    isdelete: true
-                }
-            })
+                data: { isdelete: true },
+            });
 
-            return deletedPost
-
+            return deletedPost;
         } catch (error) {
             throw new Error(error.message);
         }
     }
-
 }
 
 export default Posting;
