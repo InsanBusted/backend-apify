@@ -13,7 +13,7 @@ class Jam {
 
       const jamData = await prisma.jam.create({
         data: {
-          jam, // langsung array string
+          daftarJam: jam, // langsung array string
           datePost: datePost ? new Date(datePost) : new Date(),
         },
       });

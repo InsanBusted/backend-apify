@@ -69,7 +69,7 @@ enum TypePost {
 
 model Jam {
   id        String   @id @default(uuid()) @db.Uuid
-  jam       String[] @db.Text
+  daftarJam       String[] @map("jam") @db.Text
   datePost  DateTime @map("date_post")
 
   posts     Post[]
