@@ -324,4 +324,8 @@ router.get("/posts", DatasetPostingController.getAll);
 router.get("/posts/:id", DatasetPostingController.getById);  
 
 
+// ai
+router.post("/instagram", InstagramController.getById);
+
+
 export default router;

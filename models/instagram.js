@@ -3,6 +3,7 @@ import { mapTikTokData } from "../lib/utils/mapTiktokData.js";
 import GetData from "./getData.js";
 import { mapInstagramData } from "../lib/utils/mapInstagramData.js";
 import { TASKS } from "../lib/utils/taskId.js";
+import prisma from "../lib/db/prisma.js";
 
 class Instagram {
 
@@ -87,6 +88,21 @@ class Instagram {
       throw new Error(`Error fetching data: ${error.message}`);
     }
   }
+
+  static async getVideoByUrl(webVideoUrl) {
+    const videos = await prisma.video.findMany({
+      where: { webVideoUrl },
+    });
+
+    if (!videos || videos.length === 0) {
+      throw new Error("Video tidak ditemukan");
+    }
+
+    return videos;
+  }
+
+
+
 }
 
 export default Instagram;
