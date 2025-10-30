@@ -19,6 +19,7 @@ model Video {
   playCount    Int            @map("play_count")
   collectCount Int            @map("collect_count")
   commentCount Int            @map("comment_count")
+  typePost     String?         @default("feed") @map("type_post")  
   isAd         Boolean?
   searchQuery  String         @map("search_query")
   createDate   DateTime       @default(now()) @map("create_date")

@@ -1,5 +1,4 @@
 import { ApifyClient } from "apify-client";
-import { mapTikTokData } from "../lib/utils/mapTiktokData.js";
 import GetData from "./getData.js";
 import { mapInstagramData } from "../lib/utils/mapInstagramData.js";
 import { TASKS } from "../lib/utils/taskId.js";
@@ -100,6 +99,33 @@ class Instagram {
 
     return videos;
   }
+
+
+  static async getTrackingDataPost() {
+    try {
+      const data = await prisma.$queryRawUnsafe(`
+      SELECT
+        author,
+        web_video_url,
+        like_count,
+        play_count,
+        comment_count,
+        share_count,
+        collect_count,
+        (create_date - interval '7 hour') AS create_date,
+        (create_time - interval '7 hour') AS create_time,
+        type_post
+      FROM videos_analytics_mv
+      ORDER BY web_video_url, create_date
+    `);
+
+      return data;
+    } catch (error) {
+      console.error("Error fetchData:", error);
+      throw new Error(`Error fetching database: ${error.message}`);
+    }
+  }
+
 
 
 

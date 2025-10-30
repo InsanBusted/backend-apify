@@ -413,6 +413,19 @@ class InstagramController {
     }
   }
 
+  static async getTrackingDataPost(req, res) {
+     console.log("🚀 Endpoint /instagram/tracking terpanggil!");
+    try {
+      const data = await Instagram.getTrackingDataPost();
+      res.status(200).json({ success: true, data });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "error fetch",
+        error: error.message,
+      });
+    }
+  }
 
 
 }
