@@ -19,7 +19,7 @@ model Video {
   playCount    Int            @map("play_count")
   collectCount Int            @map("collect_count")
   commentCount Int            @map("comment_count")
-  typePost     String?         @default("feed") @map("type_post")  
+  typePost     String?        @default("feed") @map("type_post")
   isAd         Boolean?
   searchQuery  String         @map("search_query")
   createDate   DateTime       @default(now()) @map("create_date")
@@ -61,36 +61,43 @@ model VideoHashtag {
 
 model Jam {
   id        String   @id @default(uuid()) @db.Uuid
-  daftarJam String[] @map("jam")
+  daftarJam String[] @map("jam") @db.Text
   datePost  DateTime @map("date_post")
-  posts     Post[]
+
+  posts Post[]
 
   @@map("jam")
 }
 
 model Post {
-  id          String      @id @default(uuid()) @db.Uuid
-  medsos      String
-  akun        String
-  idakun      String
-  idtoken     String
-  caption     String
-  datePost    DateTime    @map("date_post")
-  jamPost     DateTime?   @map("jam_post")
-  jamToPost   DateTime?   @map("jam_to_post")
-  cby         Int
-  mby         Int?
-  cdate       DateTime    @default(now())
-  mdate       DateTime    @updatedAt
-  isdelete    Boolean     @default(false)
-  urutan      String
-  typePost    TypePost
-  publishedId String?
-  status      String?
-  jamId       String?     @db.Uuid
-  linkPost    String?
-  medias      PostMedia[]
-  jam         Jam?        @relation(fields: [jamId], references: [id])
+  id        String    @id @default(uuid()) @db.Uuid
+  medsos    String
+  akun      String
+  idakun    String
+  idtoken   String
+  caption   String
+  datePost  DateTime  @map("date_post")
+  jamPost   DateTime? @map("jam_post")
+  jamToPost DateTime? @map("jam_to_post")
+  linkPost  String?
+  cby       Int
+  mby       Int?
+  cdate     DateTime  @default(now())
+  mdate     DateTime  @updatedAt
+  isdelete  Boolean   @default(false)
+  urutan    String
+  typePost  TypePost
+
+  // Tambahan opsional untuk kontrol proses upload & publish
+  publishedId String? // ID posting hasil publish ke Meta API
+  status      String? // draft | uploaded | published | failed
+
+  // Relasi opsional ke Jam
+  jamId String? @db.Uuid
+  jam   Jam?    @relation(fields: [jamId], references: [id])
+
+  // Relasi ke tabel media (carousel)
+  medias PostMedia[]
 
   @@index([datePost])
   @@index([medsos])
@@ -103,10 +110,11 @@ model PostMedia {
   imageUrl   String
   coverUrl   String?
   extention  String
-  creationId String?
-  urutan     Int
+  creationId String? // hasil upload ke Meta API
+  urutan     Int // urutan dalam carousel
   cdate      DateTime @default(now())
-  post       Post     @relation(fields: [postId], references: [id])
+
+  post Post @relation(fields: [postId], references: [id])
 
   @@index([postId])
   @@index([urutan])
@@ -125,66 +133,3 @@ enum TypePost {
   reels
   carousel
 }
-
-model Jam {
-  id        String   @id @default(uuid()) @db.Uuid
-  daftarJam       String[] @map("jam") @db.Text
-  datePost  DateTime @map("date_post")
-
-  posts     Post[]
-
-  @@map("jam")
-}
-
-model Post {
-  id          String     @id @default(uuid()) @db.Uuid
-  medsos      String
-  akun        String
-  idakun      String
-  idtoken     String
-  caption     String
-  datePost    DateTime   @map("date_post")
-  jamPost     DateTime?  @map("jam_post")
-  jamToPost   DateTime?  @map("jam_to_post")
-  linkPost    String?
-  cby         Int
-  mby         Int?
-  cdate       DateTime   @default(now())
-  mdate       DateTime   @updatedAt
-  isdelete    Boolean    @default(false)
-  urutan      String
-  typePost    TypePost
-
-  // Tambahan opsional untuk kontrol proses upload & publish
-  publishedId String?    // ID posting hasil publish ke Meta API
-  status      String?    // draft | uploaded | published | failed
-
-  // Relasi opsional ke Jam
-  jamId       String?    @db.Uuid
-  jam         Jam?       @relation(fields: [jamId], references: [id])
-
-  // Relasi ke tabel media (carousel)
-  medias      PostMedia[]
-
-  @@map("posts")
-  @@index([datePost])
-  @@index([medsos])
-}
-
-model PostMedia {
-  id          String   @id @default(uuid()) @db.Uuid
-  postId      String   @db.Uuid
-  imageUrl    String
-  coverUrl    String? 
-  extention   String
-  creationId  String?  // hasil upload ke Meta API
-  urutan      Int      // urutan dalam carousel
-  cdate       DateTime @default(now())
-
-  post        Post     @relation(fields: [postId], references: [id])
-
-  @@map("post_medias")
-  @@index([postId])
-  @@index([urutan])
-}
-
