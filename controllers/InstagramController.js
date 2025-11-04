@@ -10,7 +10,7 @@ class InstagramController {
 
       // pastikan search jadi array of string
       if (typeof search === "string") {
-        search = search.split(/\s+/); 
+        search = search.split(/\s+/);
       } else if (!Array.isArray(search)) {
         return res.status(400).json({
           success: false,
@@ -28,8 +28,6 @@ class InstagramController {
       });
     }
   }
-
-
 
   static async getData(req, res) {
     try {
@@ -172,7 +170,7 @@ class InstagramController {
               });
             }
           }
-          
+
         })
       );
 
@@ -391,6 +389,45 @@ class InstagramController {
     }
 
   }
+
+  static async getById(req, res) {
+    try {
+      const { webVideoUrl } = req.body;
+
+      if (!webVideoUrl) {
+        return res.status(400).json({
+          success: false,
+          message: "webVideoUrl harus diisi",
+        });
+      }
+
+      const data = await Instagram.getVideoByUrl(webVideoUrl);
+      res.status(200).json({ success: true, data });
+
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "error fetch",
+        error: error.message,
+      });
+    }
+  }
+
+  static async getTrackingDataPost(req, res) {
+     console.log("🚀 Endpoint /instagram/tracking terpanggil!");
+    try {
+      const data = await Instagram.getTrackingDataPost();
+      res.status(200).json({ success: true, data });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "error fetch",
+        error: error.message,
+      });
+    }
+  }
+
+
 }
 
 export default InstagramController

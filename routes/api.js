@@ -247,6 +247,12 @@ router.get(
  */
 router.post("/instagram/run-reference", InstagramController.reference);
 
+// ai
+router.get("/instagram/tracking",InstagramController.getTrackingDataPost)
+router.post("/instagram", InstagramController.getById);
+
+
+
 /**
  * @swagger
  * /instagram/{datasetId}:
@@ -318,10 +324,11 @@ router.get("/jam", JamController.getAll);
 router.delete("/jam/:id", JamController.delete);
 
 
-
 // Ambil semua posting
 router.get("/posts", DatasetPostingController.getAll);  
 router.get("/posts/:id", DatasetPostingController.getById);  
+
+
 
 
 export default router;
