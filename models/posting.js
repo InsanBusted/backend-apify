@@ -6,12 +6,11 @@ import { URL } from "url";
 const prisma = new PrismaClient();
 
 class Posting {
-
   // 🔹 Helper untuk replace domain URL
   static replaceDomain(url) {
     if (!url) return url;
     return url.replace(
-      /^http:\/\/178\.248\.73\.198:9902/,
+      /^http:\/\/178\.248\.73\.198:9901/,
       "https://s3.berlstore.com"
     );
   }
