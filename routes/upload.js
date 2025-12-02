@@ -12,18 +12,22 @@ const upload = multer({ storage: multer.memoryStorage() });
 router.post("/", upload.array("files"), async (req, res) => {
   try {
     if (!req.files || req.files.length === 0) {
-      return res.status(400).json({ success: false, message: "No files uploaded" });
+      return res
+        .status(400)
+        .json({ success: false, message: "No files uploaded" });
     }
 
     // Upload semua file ke bucket
     const uploadedFiles = await Promise.all(
       req.files.map(async (file) => {
         const safeName = file.originalname
-          .replace(/\s+/g, "-")        
-          .replace(/[()]/g, "")         
-          .replace(/[^a-zA-Z0-9._-]/g, ""); 
+          .replace(/\s+/g, "-")
+          .replace(/[()]/g, "")
+          .replace(/[^a-zA-Z0-9._-]/g, "");
 
-        const filename = `${Date.now()}-${safeName}`;
+        // const filename = `${Date.now()}-${safeName}`;
+        const folder = "personalColor/twc/";
+        const filename = `${folder}${file.originalname}`;
 
         await s3.send(
           new PutObjectCommand({

@@ -48,7 +48,6 @@ class GetData {
         throw new Error(`API error ${response.status}`);
       }
 
-
       const items = await response.json();
 
       const mappedData = items.map((item) => ({
@@ -125,6 +124,7 @@ class GetData {
       }
 
       const items = await response.json();
+      console.log("data dari apify nya", items);
 
       const mappedData = items.flatMap((item) =>
         (item.topPosts || []).map((post) => ({

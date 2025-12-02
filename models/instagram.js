@@ -5,8 +5,6 @@ import { TASKS } from "../lib/utils/taskId.js";
 import prisma from "../lib/db/prisma.js";
 
 class Instagram {
-
-
   static async fetchData({ search, onlyPostsNewerThan }) {
     try {
       const client = new ApifyClient({
@@ -33,7 +31,6 @@ class Instagram {
     }
   }
 
-
   static async fetchReferenceDataInstagram({ search, onlyPostsNewerThan }) {
     try {
       const client = new ApifyClient({
@@ -54,6 +51,7 @@ class Instagram {
       const items = await GetData.getDataDetailKontenInstagram(
         run.defaultDatasetId
       );
+      console.log("data result referensi instagram", items);
       const mappedData = mapInstagramData(items, run.defaultDatasetId);
 
       return mappedData;
@@ -100,7 +98,6 @@ class Instagram {
     return videos;
   }
 
-
   static async getTrackingDataPost() {
     try {
       const data = await prisma.$queryRawUnsafe(`
@@ -125,10 +122,6 @@ class Instagram {
       throw new Error(`Error fetching database: ${error.message}`);
     }
   }
-
-
-
-
 }
 
 export default Instagram;

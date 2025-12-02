@@ -49,7 +49,11 @@ class TiktokController {
         });
       }
 
-      const data = await Tiktok.fetchReferenceData({ searchQueries, sort, time });
+      const data = await Tiktok.fetchReferenceData({
+        searchQueries,
+        sort,
+        time,
+      });
       res.status(200).json({ success: true, data });
     } catch (error) {
       res.status(500).json({
@@ -93,17 +97,17 @@ class TiktokController {
       // 🔹 Buat filter platform dinamis
       const platformFilter = platform
         ? {
-          webVideoUrl: {
-            contains: platform, 
-            mode: "insensitive",
-          },
-        }
+            webVideoUrl: {
+              contains: platform,
+              mode: "insensitive",
+            },
+          }
         : {};
 
       // 🔹 Ambil data author unik
       const videos = await prisma.video.findMany({
         where: {
-          source: 'bank-data',
+          source: "bank-data",
           ...platformFilter,
         },
         select: {
@@ -111,9 +115,9 @@ class TiktokController {
           createDate: true,
         },
         orderBy: {
-          createDate: 'desc',
+          createDate: "desc",
         },
-        distinct: ['author'], 
+        distinct: ["author"],
       });
 
       const data = videos.map((v) => ({
@@ -123,13 +127,63 @@ class TiktokController {
 
       res.status(200).json({ success: true, data });
     } catch (error) {
-      console.error('❌ getAllAkunBankKonten error:', error);
+      console.error("❌ getAllAkunBankKonten error:", error);
       res.status(500).json({ success: false, error: error.message });
     }
   }
 
+  static async FetchInsight(req, res) {
+    try {
+      const { cookie, awemeId, insightUrl } = req.body;
 
+      if (!cookie) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Cookie diperlukan." });
+      }
 
+      if (!awemeId) {
+        return res
+          .status(400)
+          .json({ success: false, message: "awemeId wajib dikirim." });
+      }
+
+      if (!insightUrl) {
+        return res
+          .status(400)
+          .json({ success: false, message: "insightUrl wajib dikirim." });
+      }
+
+      const saved = await Tiktok.saveInsight({
+        cookie,
+        awemeId,
+        insightUrl,
+      });
+
+      return res.json({
+        success: true,
+        message: "Insight disimpan.",
+        data: saved,
+      });
+    } catch (err) {
+      return res.status(500).json({
+        success: false,
+        message: err.message,
+      });
+    }
+  }
+
+  static async getAllInsight(req, res) {
+    try {
+      const data = await Tiktok.getAll();
+      return res.json({ success: true, data });
+    } catch (err) {
+      return res.status(500).json({
+        success: false,
+        message: err.message,
+      });
+    }
+  }
 }
 
 export default TiktokController;

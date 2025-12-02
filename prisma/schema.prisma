@@ -133,3 +133,29 @@ enum TypePost {
   reels
   carousel
 }
+
+model TikTokInsight {
+  id          String  @id @default(uuid()) @db.Uuid
+  author      String
+  awemeId     String
+  webVideoUrl String?
+
+  averageWatchTimeTotal Float? // realtime_average_watch_time_history.total
+  finishRateTotal       Float? // realtime_finish_rate_history.total
+  newFollowersTotal     Int? // realtime_new_followers_history.total
+  totalPlayTime         Float? // realtime_total_play_time_history.total
+  totalVideoViews       Int? // realtime_video_view_history.total
+
+  averageWatchTimeHistory Json?
+  finishRateHistory       Json?
+  newFollowersHistory     Json?
+  totalPlayTimeHistory    Json?
+  videoViewHistory        Json?
+
+  rawData Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("tiktok_insights")
+}

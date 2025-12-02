@@ -4,11 +4,14 @@ import DatasetController from "../controllers/DatasetController.js";
 import InstagramController from "../controllers/InstagramController.js";
 import DatasetShopeeController from "../controllers/DatasetShopeeController.js";
 import DatasetPostingController from "../controllers/DatasetPostingController.js";
-import upload  from "../middleware/upload.js";
+import upload from "../middleware/upload.js";
 import JamController from "../controllers/jamController.js";
 
-
 const router = Router();
+
+// tiktok insight
+router.post("/tiktok/fetch", TiktokController.FetchInsight);
+router.get("/tiktok/insight", TiktokController.getAllInsight);
 
 /**
  * @swagger
@@ -210,7 +213,10 @@ router.post("/instagram/run-detail", InstagramController.getDetailKonten);
  */
 router.get("/tiktok/konten", DatasetController.getAllData);
 router.get("/tiktok/konten/bankData", DatasetController.getAllDataBankData);
-router.get("/tiktok/konten/bank-konten/list-akun", TiktokController.getAllAkunBankKonten);
+router.get(
+  "/tiktok/konten/bank-konten/list-akun",
+  TiktokController.getAllAkunBankKonten
+);
 
 /**
  * @swagger
@@ -248,10 +254,8 @@ router.get(
 router.post("/instagram/run-reference", InstagramController.reference);
 
 // ai
-router.get("/instagram/tracking",InstagramController.getTrackingDataPost)
+router.get("/instagram/tracking", InstagramController.getTrackingDataPost);
 router.post("/instagram", InstagramController.getById);
-
-
 
 /**
  * @swagger
@@ -305,30 +309,33 @@ router.get(
   DatasetController.getDetailDataReferensi
 );
 
-
 // SHOPEE
 router.get("/shopee/get_affiliate", DatasetShopeeController.getAffiliate);
-router.get("/shopee/detail_affiliate", DatasetShopeeController.getDetailAffiliate);
-router.get("/shopee/category_affiliate", DatasetShopeeController.getCategoryAffiliate);
-
+router.get(
+  "/shopee/detail_affiliate",
+  DatasetShopeeController.getDetailAffiliate
+);
+router.get(
+  "/shopee/category_affiliate",
+  DatasetShopeeController.getCategoryAffiliate
+);
 
 // Upload posting
-router.post("/post/instagram",  DatasetPostingController.upload);
-router.put("/post/instagram/:id", upload.array("files"), DatasetPostingController.edit);
+router.post("/post/instagram", DatasetPostingController.upload);
+router.put(
+  "/post/instagram/:id",
+  upload.array("files"),
+  DatasetPostingController.edit
+);
 router.delete("/post/instagram/delete/:id", DatasetPostingController.delete);
-
 
 // Jam Posting
 router.post("/jam", JamController.create);
 router.get("/jam", JamController.getAll);
 router.delete("/jam/:id", JamController.delete);
 
-
 // Ambil semua posting
-router.get("/posts", DatasetPostingController.getAll);  
-router.get("/posts/:id", DatasetPostingController.getById);  
-
-
-
+router.get("/posts", DatasetPostingController.getAll);
+router.get("/posts/:id", DatasetPostingController.getById);
 
 export default router;
