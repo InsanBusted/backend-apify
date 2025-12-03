@@ -3,7 +3,6 @@ import GetData from "../models/getData.js";
 import Instagram from "../models/instagram.js";
 
 class InstagramController {
-
   static async index(req, res) {
     try {
       let { search, onlyPostsNewerThan } = req.body;
@@ -51,15 +50,15 @@ class InstagramController {
             shareCount: item.shareCount,
             collectCount: item.collectCount,
             commentCount: item.commentCount,
-            source: 'referensi',
+            source: "referensi",
           };
 
           const existingVideo = await prisma.video.findFirst({
             where: {
               webVideoUrl: item.webVideoUrl,
-              source: 'referensi',
+              source: "referensi",
             },
-            orderBy: { createTime: 'desc' },
+            orderBy: { createTime: "desc" },
           });
 
           let video;
@@ -76,7 +75,9 @@ class InstagramController {
 
           if (item.hashtags?.length) {
             const hashtags = item.hashtags
-              .map((tag) => (typeof tag === "string" ? tag.trim() : tag.name?.trim()))
+              .map((tag) =>
+                typeof tag === "string" ? tag.trim() : tag.name?.trim()
+              )
               .filter(Boolean);
 
             if (hashtags.length > 0) {
@@ -98,7 +99,6 @@ class InstagramController {
               });
             }
           }
-
         })
       );
 
@@ -139,7 +139,7 @@ class InstagramController {
             shareCount: item.shareCount,
             collectCount: item.collectCount,
             commentCount: item.commentCount,
-            source: 'analisis',
+            source: "analisis",
           };
 
           const video = await prisma.video.create({
@@ -148,7 +148,9 @@ class InstagramController {
 
           if (item.hashtags?.length) {
             const hashtags = item.hashtags
-              .map((tag) => (typeof tag === "string" ? tag.trim() : tag.name?.trim()))
+              .map((tag) =>
+                typeof tag === "string" ? tag.trim() : tag.name?.trim()
+              )
               .filter(Boolean);
 
             if (hashtags.length > 0) {
@@ -170,7 +172,6 @@ class InstagramController {
               });
             }
           }
-
         })
       );
 
@@ -210,15 +211,15 @@ class InstagramController {
             shareCount: item.shareCount,
             collectCount: item.collectCount,
             commentCount: item.commentCount,
-            source: 'bank-data',
+            source: "bank-data",
           };
 
           const existingVideo = await prisma.video.findFirst({
             where: {
               webVideoUrl: item.webVideoUrl,
-              source: 'bank-data',
+              source: "bank-data",
             },
-            orderBy: { createTime: 'desc' },
+            orderBy: { createTime: "desc" },
           });
 
           let video;
@@ -235,7 +236,9 @@ class InstagramController {
 
           if (item.hashtags?.length) {
             const hashtags = item.hashtags
-              .map((tag) => (typeof tag === "string" ? tag.trim() : tag.name?.trim()))
+              .map((tag) =>
+                typeof tag === "string" ? tag.trim() : tag.name?.trim()
+              )
               .filter(Boolean);
 
             if (hashtags.length > 0) {
@@ -257,7 +260,6 @@ class InstagramController {
               });
             }
           }
-
         })
       );
 
@@ -307,7 +309,9 @@ class InstagramController {
 
           if (item.hashtags?.length) {
             const hashtags = item.hashtags
-              .map((tag) => (typeof tag === "string" ? tag.trim() : tag?.name?.trim()))
+              .map((tag) =>
+                typeof tag === "string" ? tag.trim() : tag?.name?.trim()
+              )
               .filter(Boolean);
 
             if (hashtags.length > 0) {
@@ -329,7 +333,6 @@ class InstagramController {
               });
             }
           }
-
         })
       );
 
@@ -378,7 +381,10 @@ class InstagramController {
       let { search } = req.body;
       let { onlyPostsNewerThan } = req.body;
 
-      const data = await Instagram.fetchReferenceDataInstagram({ search, onlyPostsNewerThan });
+      const data = await Instagram.fetchReferenceDataInstagram({
+        search,
+        onlyPostsNewerThan,
+      });
       res.status(200).json({ success: true, data });
     } catch (error) {
       res.status(500).json({
@@ -387,7 +393,6 @@ class InstagramController {
         error: error.message,
       });
     }
-
   }
 
   static async getById(req, res) {
@@ -403,7 +408,6 @@ class InstagramController {
 
       const data = await Instagram.getVideoByUrl(webVideoUrl);
       res.status(200).json({ success: true, data });
-
     } catch (error) {
       res.status(500).json({
         success: false,
@@ -414,9 +418,10 @@ class InstagramController {
   }
 
   static async getTrackingDataPost(req, res) {
-     console.log("🚀 Endpoint /instagram/tracking terpanggil!");
+    console.log("🚀 Endpoint /instagram/tracking terpanggil!");
     try {
-      const data = await Instagram.getTrackingDataPost();
+      const { author } = req.query;
+      const data = await Instagram.getTrackingDataPost(author);
       res.status(200).json({ success: true, data });
     } catch (error) {
       res.status(500).json({
@@ -426,8 +431,6 @@ class InstagramController {
       });
     }
   }
-
-
 }
 
-export default InstagramController
+export default InstagramController;

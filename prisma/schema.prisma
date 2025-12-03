@@ -80,6 +80,7 @@ model Post {
   jamPost   DateTime? @map("jam_post")
   jamToPost DateTime? @map("jam_to_post")
   linkPost  String?
+  username  String?
   cby       Int
   mby       Int?
   cdate     DateTime  @default(now())
