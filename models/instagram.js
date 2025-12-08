@@ -97,24 +97,50 @@ class Instagram {
     return videos;
   }
 
-  static async getTrackingDataPost(author) {
+  static async getTrackingDataPost(author, url) {
     try {
-      const data = await prisma.$queryRawUnsafe(`
-      SELECT
-        author,
-        web_video_url,
-        like_count,
-        play_count,
-        comment_count,
-        share_count,
-        collect_count,
-        (create_date - interval '7 hour') AS create_date,
-        (create_time - interval '7 hour') AS create_time,
-        type_post
-      FROM videos_analytics_mv
-      where author = '${author}'
-      ORDER BY web_video_url, create_date
-    `);
+      let whereClauses = [];
+      let params = [];
+
+      if (author) {
+        whereClauses.push(`author = $${params.length + 1}`);
+        params.push(author);
+      }
+
+      if (url) {
+        whereClauses.push(`web_video_url = $${params.length + 1}`);
+        params.push(url);
+      }
+
+      const whereSQL =
+        whereClauses.length > 0 ? `WHERE ${whereClauses.join(" AND ")}` : "";
+
+      // console.log("isi data", whereClauses);
+
+      const query = `
+  SELECT
+    author,
+    web_video_url,
+    like_count,
+    play_count,
+    comment_count,
+    share_count,
+    collect_count,
+    (create_date - interval '7 hour') AS create_date,
+    (create_time - interval '7 hour') AS create_time,
+    type_post
+  FROM videos_analytics_mv
+  ${whereClauses.length > 0 ? `WHERE ${whereClauses.join(" AND ")}` : ""}
+  ORDER BY web_video_url, create_date
+`;
+
+      // console.log("query:", query);
+      // console.log("params:", params);
+
+      const data =
+        params.length > 0
+          ? await prisma.$queryRawUnsafe(query, ...params)
+          : await prisma.$queryRawUnsafe(query);
 
       return data;
     } catch (error) {
